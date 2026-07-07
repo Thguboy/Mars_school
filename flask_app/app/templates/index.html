@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARS SPACE | O'quvchi Platformasi</title>
+    <!-- Google Fonts: Inter and Outfit for stylish UI feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for robust modern icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <!-- Toast Notifications wrapper -->
+    <div id="toast-container"></div>
+
+    <div class="app-container">
+        <!-- 1.Chap menyu (Sidebar - Navigation) -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-graphic"><i class="fa-solid fa-cookie-bite logo-spin"></i></div>
+                <span class="logo-text">MARS <span class="accent-dot"></span></span>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" data-target="home">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Asosiy sahifa</span>
+                </button>
+                <button class="nav-item" data-target="courses">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Mening kurslarim</span>
+                </button>
+                <button class="nav-item" data-target="eduverse">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Eduverse</span>
+                </button>
+                <button class="nav-item" data-target="marscode">
+                    <i class="fa-solid fa-code"></i>
+                    <span>&lt;MarsCode/&gt;</span>
+                </button>
+                <button class="nav-item" data-target="blog">
+                    <i class="fa-solid fa-hashtag"></i>
+                    <span>Blog</span>
+                </button>
+                <button class="nav-item" data-target="payment">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <span>Onlayn to'lov</span>
+                </button>
+                
+                <button class="nav-item shop-highlight-btn" data-target="shop">
+                    <i class="fa-solid fa-shopping-bag"></i>
+                    <span>Space shop</span>
+                </button>
+            </nav>
+
+            <!-- Mascot placeholder (inside sidebar bottom like requested) -->
+            <div class="sidebar-mascot-card">
+                <div class="mascot-sparkle"></div>
+                <div class="mascot-mini-text">Mars Buddy 🚀</div>
+                <p>O'rganishdan to'xtamang, muvaffaqiyatlar!</p>
+            </div>
+        </aside>
+
+        <!-- Main content area wrapper -->
+        <div class="content-wrapper">
+            
+            <!-- 2. Yuqori Header paneli -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h2 class="section-title-label" id="current-page-title">Asosiy sahifa</h2>
+                </div>
+                
+                <div class="header-right">
+                    <!-- Stats panel -->
+                    <div class="stats-badges">
+                        <div class="stat-badge wallet-badge" title="Hamyon balansi">
+                            <i class="fa-solid fa-wallet"></i>
+                            <span id="stat-wallet">817 500,25</span> so'm
+                        </div>
+                        <div class="stat-badge streak-badge" title="Kunlik seriya">
+                            <i class="fa-solid fa-fire animate-pulse-streak"></i>
+                            <span id="stat-streak">1</span>
+                        </div>
+                        <div class="stat-badge coin-badge" title="Mars tangalari">
+                            <i class="fa-solid fa-coins font-gold"></i>
+                            <span id="stat-coins">148</span>
+                        </div>
+                        <div class="stat-badge energy-badge" title="Mars energiyasi">
+                            <i class="fa-solid fa-bolt font-bolt"></i>
+                            <span id="stat-energy">1170</span>
+                        </div>
+                    </div>
+
+                    <!-- Subscription gradient button -->
+                    <button class="btn-subscribe" id="subscribe-btn" onclick="activateSubscription()">
+                        <i class="fa-solid fa-crown"></i>
+                        <span>Obuna bo'ling</span>
+                    </button>
+
+                    <!-- Notifications -->
+                    <div class="notification-box" onclick="toggleNotifications()">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"></span>
+                        <div class="notification-dropdown" id="notification-menu">
+                            <div class="notify-header">Bildirishnomalar</div>
+                            <div class="notify-list">
+                                <div class="notify-item">
+                                    <div class="notify-dot"></div>
+                                    <div class="notify-desc">
+                                        <p><strong>Yangi dars yuklandi!</strong> Back-End PRO guruhiga 1-video qo'shildi.</p>
+                                        <span class="notify-time">5 daqiqa avval</span>
+                                    </div>
+                                </div>
+                                <div class="notify-item">
+                                    <div class="notify-dot"></div>
+                                    <div class="notify-desc">
+                                        <p><strong>Xabar keldi:</strong> AI yordamchingiz savollaringizga javob berishga tayyor!</p>
+                                        <span class="notify-time">1 soat avval</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Avatar profile with role switcher -->
+                    <div class="profile-area" id="profile-dropdown-trigger" onclick="toggleProfileDropdown()">
+                        <div class="profile-name-block">
+                            <span class="profile-user-name">Umidbek</span>
+                            <span class="profile-role-label" id="header-role-label">STUDENT</span>
+                        </div>
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Umid" alt="Profile" class="profile-pic">
+                        <!-- Role Switcher Dropdown -->
+                        <div class="role-dropdown" id="role-dropdown">
+                            <div class="role-dd-header">Mening profilim</div>
+                            <div class="role-dd-divider"></div>
+                            <button class="role-dd-item" onclick="event.stopPropagation(); switchRole('student')">
+                                <i class="fa-solid fa-user-graduate"></i> Student Paneli
+                            </button>
+                            <button class="role-dd-item" onclick="event.stopPropagation(); switchRole('teacher')">
+                                <i class="fa-solid fa-chalkboard-user"></i> Teacher Paneli
+                            </button>
+                            <button class="role-dd-item" onclick="event.stopPropagation(); switchRole('admin')">
+                                <i class="fa-solid fa-crown"></i> Admin Paneli
+                            </button>
+                            <div class="role-dd-divider"></div>
+                            <button class="role-dd-item role-dd-logout">
+                                <i class="fa-solid fa-right-from-bracket"></i> Chiqish
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Dynamic sections -->
+            <main class="page-container">
+
+                <!-- 🏠 ASOSIY SAHIFA PANEL -->
+                <section class="tab-panel active-panel" id="panel-home">
+                    <div class="home-grid">
+                        <div class="home-main-col">
+                            <!-- Level Map Card -->
+                            <div class="glass-card lvl-card">
+                                <div class="lvl-decorator"></div>
+                                <div class="lvl-header">
+                                    <div>
+                                        <h3 class="card-headings"><i class="fa-solid fa-medal text-golden"></i> Darajangiz: LVL 9</h3>
+                                        <p class="card-sub">Keyingi darajagacha 450 XP qoldi</p>
+                                    </div>
+                                    <div class="lvl-label">PRO talaba</div>
+                                </div>
+                                <div class="lvl-progress-area">
+                                    <div class="lvl-bar-track">
+                                        <div class="lvl-bar-fill" style="width: 65%;"></div>
+                                        <span class="lvl-pin" style="left: 20%;" title="Bosqich 1"></span>
+                                        <span class="lvl-pin" style="left: 40%;" title="Bosqich 2"></span>
+                                        <span class="lvl-pin" style="left: 65%;" title="Joriy"></span>
+                                        <span class="lvl-pin" style="left: 85%;" title="Bosqich 4"></span>
+                                    </div>
+                                    <div class="lvl-labels-row">
+                                        <span>LVL 8</span>
+                                        <span class="active-lvl">LVL 9</span>
+                                        <span>LVL 10</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="home-split-row">
+                                <!-- Active learning -->
+                                <div class="glass-card active-course-preview">
+                                    <div class="course-badge">[New] Back-End PRO</div>
+                                    <div class="course-flex-main">
+                                        <div class="course-info">
+                                            <h4>Darslarni davom ettirish</h4>
+                                            <p>Siz oxirgi marta "Node.js asoslari" darsida to'xtagan edingiz.</p>
+                                        </div>
+                                        <div class="radial-progress" style="--percent: 33;">
+                                            <svg>
+                                                <circle cx="28" cy="28" r="24"></circle>
+                                                <circle cx="28" cy="28" r="24"></circle>
+                                            </svg>
+                                            <span class="percent-val">33%</span>
+                                        </div>
+                                    </div>
+                                    <button class="btn-primary mt-2" onclick="switchTab('courses')">
+                                        <span>Davom etish</span> <i class="fa-solid fa-chevron-right"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Typing Speed widget -->
+                                <div class="glass-card wpm-preview">
+                                    <div class="wpm-header">
+                                        <i class="fa-solid fa-keyboard font-orange"></i>
+                                        <span>MarsCode Typing Test</span>
+                                    </div>
+                                    <div class="wpm-value">
+                                        <div class="wpm-number" id="home-wpm">45</div>
+                                        <div class="wpm-unit">WPM (Tezlik)</div>
+                                    </div>
+                                    <button class="btn-outline wpm-btn" onclick="startTypingSimulator()">Testni boshlash</button>
+                                </div>
+                            </div>
+
+                            <!-- Additional class schedule -->
+                            <div class="glass-card schedule-card">
+                                <h4>Qo'shimcha darslar jadvali</h4>
+                                <p class="card-sub">Haftalik rejalaringizni belgilang</p>
+                                <div class="schedule-grid">
+                                    <div class="schedule-day">
+                                        <span class="day-abbr">Dush</span>
+                                        <button class="btn-schedule-slot" onclick="toggleSchedule(this)"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                    <div class="schedule-day">
+                                        <span class="day-abbr">Sesh</span>
+                                        <button class="btn-schedule-slot active-slot" onclick="toggleSchedule(this)"><i class="fa-solid fa-check"></i></button>
+                                    </div>
+                                    <div class="schedule-day">
+                                        <span class="day-abbr">Chor</span>
+                                        <button class="btn-schedule-slot" onclick="toggleSchedule(this)"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                    <div class="schedule-day">
+                                        <span class="day-abbr">Pay</span>
+                                        <button class="btn-schedule-slot active-slot" onclick="toggleSchedule(this)"><i class="fa-solid fa-check"></i></button>
+                                    </div>
+                                    <div class="schedule-day">
+                                        <span class="day-abbr">Jum</span>
+                                        <button class="btn-schedule-slot" onclick="toggleSchedule(this)"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                    <div class="schedule-day">
+                                        <span class="day-abbr">Shan</span>
+                                        <button class="btn-schedule-slot" onclick="toggleSchedule(this)"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Home Right panel -->
+                        <div class="home-sub-col">
+                            <!-- Season #12 Leaderboard -->
+                            <div class="glass-card bg-purple-gradient text-white relative">
+                                <div class="shine-effect"></div>
+                                <div class="leaderboard-hdr">
+                                    <div>
+                                        <h4>Season #12 <i class="fa-solid fa-fire text-yellow"></i></h4>
+                                        <span class="leaderboard-time">Mavsum tugashiga: 12 kun qoldi</span>
+                                    </div>
+                                </div>
+
+                                <div class="leaderboard-rankings">
+                                    <div class="rank-row">
+                                        <span class="rank-num first-rank">#1</span>
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aziz" class="rank-avatar">
+                                        <div class="rank-info">
+                                            <div class="rank-name">Azizbek <i class="fa-solid fa-crown text-yellow"></i></div>
+                                            <div class="rank-level">LVL 15 • 4,500 XP</div>
+                                        </div>
+                                    </div>
+                                    <div class="rank-row">
+                                        <span class="rank-num">#2</span>
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Dilnoza" class="rank-avatar">
+                                        <div class="rank-info">
+                                            <div class="rank-name">Dilnoza</div>
+                                            <div class="rank-level">LVL 14 • 4,200 XP</div>
+                                        </div>
+                                    </div>
+                                    <div class="rank-row">
+                                        <span class="rank-num">#3</span>
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jasur" class="rank-avatar">
+                                        <div class="rank-info">
+                                            <div class="rank-name">Jasur</div>
+                                            <div class="rank-level">LVL 14 • 4,100 XP</div>
+                                        </div>
+                                    </div>
+                                    <div class="rank-row">
+                                        <span class="rank-num">#4</span>
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Malika" class="rank-avatar">
+                                        <div class="rank-info">
+                                            <div class="rank-name">Malika</div>
+                                            <div class="rank-level">LVL 13 • 3,800 XP</div>
+                                        </div>
+                                    </div>
+                                    <div class="rank-row">
+                                        <span class="rank-num">#5</span>
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Otabek" class="rank-avatar">
+                                        <div class="rank-info">
+                                            <div class="rank-name">Otabek</div>
+                                            <div class="rank-level">LVL 12 • 3,500 XP</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn-link mt-2 text-white text-center w-full">Barchasini ko'rish</button>
+                            </div>
+
+                            <!-- Shop Preview item selector -->
+                            <div class="glass-card shop-side-card">
+                                <h5>Space Shop</h5>
+                                <div class="shop-badge">500 Coins</div>
+                                <div class="side-shop-img-box">
+                                    <div class="hoodie-graphic"><i class="fa-solid fa-shirt"></i></div>
+                                    <span>Mars Hoodie</span>
+                                </div>
+                                <button class="btn-outline w-full text-sm mt-2" onclick="switchTab('shop')">Shopga o'tish</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 📖 MENING KURSLARIM SAHIFA -->
+                <section class="tab-panel" id="panel-courses">
+                    <div class="courses-layout">
+                        <!-- Davom etayotgan kurslar -->
+                        <div class="course-section-block">
+                            <h3 class="block-title"><i class="fa-solid fa-rotate-left font-orange"></i> Davom etayotgan kurslar</h3>
+                            <div class="courses-grid">
+                                <!-- Card 1 -->
+                                <div class="course-card ongoing-item">
+                                    <div class="course-card-hdr">
+                                        <span class="tag-status ongoing">[New] Back-End PRO</span>
+                                        <span class="group-id">Guruh: nBPro-340</span>
+                                    </div>
+                                    <div class="course-card-body">
+                                        <h4>Node.js va Express serverlari</h4>
+                                        <p>Zamonamizning eng ommabop backend texnologiyalari.</p>
+                                    </div>
+                                    <div class="course-card-footer">
+                                        <button class="btn-enter" onclick="playVideo('qRUSKrHT1Y4')">Kirish <i class="fa-solid fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                                <!-- Card 2 -->
+                                <div class="course-card ongoing-item">
+                                    <div class="course-card-hdr">
+                                        <span class="tag-status ongoing">CyberSecurity</span>
+                                        <span class="group-id">Guruh: CBS-414</span>
+                                    </div>
+                                    <div class="course-card-body">
+                                        <h4>Kiberxavfsizlik va Tarmoqlar</h4>
+                                        <p>Xakerlik hujumlaridan himoyalanish va tizim auditi.</p>
+                                    </div>
+                                    <div class="course-card-footer">
+                                        <button class="btn-enter" onclick="playVideo('_cs2Hvw1MFk')">Kirish <i class="fa-solid fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bitirilgan kurslar -->
+                        <div class="course-section-block mt-4">
+                            <h3 class="block-titleCompleted"><i class="fa-solid fa-circle-check text-green"></i> Bitirilgan kurslar</h3>
+                            <div class="courses-grid">
+                                <!-- Card 3 -->
+                                <div class="course-card finished-item">
+                                    <div class="finished-chk-badge"><i class="fa-solid fa-check"></i></div>
+                                    <div class="course-card-hdr">
+                                        <span class="tag-status finished">[New] Beginner</span>
+                                        <span class="group-id">Guruh: nBG-2498</span>
+                                    </div>
+                                    <div class="course-card-body">
+                                        <h4>Dasturlash Asoslari (Python, CSS)</h4>
+                                        <p>Kompyuter savodxonligi va boshlang'ich tushunchalar.</p>
+                                    </div>
+                                    <div class="course-card-footer">
+                                        <button class="btn-enter" onclick="playVideo('MqrSRrtBroc')">Kirish <i class="fa-solid fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                                <!-- Card 4 -->
+                                <div class="course-card finished-item">
+                                    <div class="finished-chk-badge"><i class="fa-solid fa-check"></i></div>
+                                    <div class="course-card-hdr">
+                                        <span class="tag-status finished">[New] Back-End</span>
+                                        <span class="group-id">Guruh: nB-2628</span>
+                                    </div>
+                                    <div class="course-card-body">
+                                        <h4>Python Web Development (Django)</h4>
+                                        <p>Full-stack backend funksiyalari va modellashtirish.</p>
+                                    </div>
+                                    <div class="course-card-footer">
+                                        <button class="btn-enter" onclick="playVideo('MqrSRrtBroc')">Kirish <i class="fa-solid fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tekin kurslar -->
+                        <div class="course-section-block mt-4">
+                            <h3 class="block-title"><i class="fa-solid fa-gift font-purple"></i> Tekin kurslar</h3>
+                            <div class="courses-grid">
+                                <div class="course-card free-item">
+                                    <span class="free-badge">FREE</span>
+                                    <div class="course-card-hdr">
+                                        <span class="tag-status free">Beginner+ (Online)</span>
+                                        <span class="group-id">Online darslar</span>
+                                    </div>
+                                    <div class="course-card-body">
+                                        <h4>Boshlang'ich Dasturlash (Katta imkoniyatlar)</h4>
+                                        <p>Mutlaqo bepul va barcha uchun ochiq web-kurs.</p>
+                                    </div>
+                                    <div class="course-card-footer">
+                                        <button class="btn-enter" onclick="playVideo('MqrSRrtBroc')">Kirish <i class="fa-solid fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 📹 EDUVERSE SAHIFA -->
+                <section class="tab-panel" id="panel-eduverse">
+                    <div class="eduverse-container">
+                        <!-- Filters -->
+                        <div class="filter-wrapper">
+                            <button class="filter-btn active-filter" onclick="filterEduverse('barchasi')">Barchasi</button>
+                            <button class="filter-btn" onclick="filterEduverse('HTML')">HTML</button>
+                            <button class="filter-btn" onclick="filterEduverse('CSS')">CSS</button>
+                            <button class="filter-btn" onclick="filterEduverse('Python')">Python</button>
+                            <button class="filter-btn" onclick="filterEduverse('Blender')">Blender</button>
+                            <button class="filter-btn" onclick="filterEduverse('C#')">C#</button>
+                            <button class="filter-btn" onclick="filterEduverse('C++')">Создание игры C++</button>
+                            <button class="filter-btn" onclick="filterEduverse('Unity')">Unity</button>
+                        </div>
+
+                        <!-- Video tutorials grid -->
+                        <div class="eduverse-grid" id="eduverse-items-grid">
+                            <!-- Course 1 -->
+                            <div class="eduverse-card-item" data-category="HTML">
+                                <div class="edu-thumbnail-wrap">
+                                    <div class="edu-thumbnail-bg" style="background-image: linear-gradient(135deg, #FF9900, #FF5E00)">
+                                        <i class="fa-solid fa-code big-thumbnail-icon"></i>
+                                    </div>
+                                    <div class="crown-badge" title="Premium Kurs"><i class="fa-solid fa-crown"></i></div>
+                                    <div class="play-overlay" onclick="playVideo('qRUSKrHT1Y4')"><i class="fa-solid fa-play"></i></div>
+                                </div>
+                                <div class="edu-meta-body">
+                                    <div class="instructor">Aleksandr Lamkov</div>
+                                    <h4>HTML Boshlang'ich Kurs</h4>
+                                    <div class="rating-row">
+                                        <span class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
+                                        <span class="stars-val">5.0</span>
+                                    </div>
+                                    <div class="stats-row">
+                                        <span><i class="fa-solid fa-users"></i> 1,293 o'quvchi</span>
+                                        <span><i class="fa-regular fa-circle-play"></i> 18 dars</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Course 2 -->
+                            <div class="eduverse-card-item" data-category="CSS">
+                                <div class="edu-thumbnail-wrap">
+                                    <div class="edu-thumbnail-bg" style="background-image: linear-gradient(135deg, #00A8FF, #0055FF)">
+                                        <i class="fa-brands fa-css3-alt big-thumbnail-icon"></i>
+                                    </div>
+                                    <div class="crown-badge" title="Premium Kurs"><i class="fa-solid fa-crown"></i></div>
+                                    <div class="play-overlay" onclick="playVideo('_cs2Hvw1MFk')"><i class="fa-solid fa-play"></i></div>
+                                </div>
+                                <div class="edu-meta-body">
+                                    <div class="instructor">Aleksandr Lamkov</div>
+                                    <h4>CSS Mukammal Grid & Flex</h4>
+                                    <div class="rating-row">
+                                        <span class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></span>
+                                        <span class="stars-val">4.5</span>
+                                    </div>
+                                    <div class="stats-row">
+                                        <span><i class="fa-solid fa-users"></i> 894 o'quvchi</span>
+                                        <span><i class="fa-regular fa-circle-play"></i> 24 dars</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Course 3 -->
+                            <div class="eduverse-card-item" data-category="Python">
+                                <div class="edu-thumbnail-wrap">
+                                    <div class="edu-thumbnail-bg" style="background-image: linear-gradient(135deg, #3776AB, #FFD343)">
+                                        <i class="fa-brands fa-python big-thumbnail-icon"></i>
+                                    </div>
+                                    <div class="crown-badge" title="Premium Kurs"><i class="fa-solid fa-crown"></i></div>
+                                    <div class="play-overlay" onclick="playVideo('MqrSRrtBroc')"><i class="fa-solid fa-play"></i></div>
+                                </div>
+                                <div class="edu-meta-body">
+                                    <div class="instructor">Aleksandr Lamkov</div>
+                                    <h4>Python Algoritmlar Asosi</h4>
+                                    <div class="rating-row">
+                                        <span class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
+                                        <span class="stars-val">4.9</span>
+                                    </div>
+                                    <div class="stats-row">
+                                        <span><i class="fa-solid fa-users"></i> 2,150 o'quvchi</span>
+                                        <span><i class="fa-regular fa-circle-play"></i> 32 dars</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Course 4 -->
+                            <div class="eduverse-card-item" data-category="Blender">
+                                <div class="edu-thumbnail-wrap">
+                                    <div class="edu-thumbnail-bg" style="background-image: linear-gradient(135deg, #EA7600, #2B2B2B)">
+                                        <i class="fa-solid fa-cube big-thumbnail-icon"></i>
+                                    </div>
+                                    <div class="crown-badge" title="Premium Kurs"><i class="fa-solid fa-crown"></i></div>
+                                    <div class="play-overlay" onclick="playVideo('MqrSRrtBroc')"><i class="fa-solid fa-play"></i></div>
+                                </div>
+                                <div class="edu-meta-body">
+                                    <div class="instructor">Aleksandr Lamkov</div>
+                                    <h4>Blender 3D Modeling va Animatsiya</h4>
+                                    <div class="rating-row">
+                                        <span class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
+                                        <span class="stars-val">4.8</span>
+                                    </div>
+                                    <div class="stats-row">
+                                        <span><i class="fa-solid fa-users"></i> 643 o'quvchi</span>
+                                        <span><i class="fa-regular fa-circle-play"></i> 15 dars</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Course 5 -->
+                            <div class="eduverse-card-item" data-category="C#">
+                                <div class="edu-thumbnail-wrap">
+                                    <div class="edu-thumbnail-bg" style="background-image: linear-gradient(135deg, #178600, #9B49C2)">
+                                        <i class="fa-solid fa-hashtag big-thumbnail-icon"></i>
+                                    </div>
+                                    <div class="crown-badge" title="Premium Kurs"><i class="fa-solid fa-crown"></i></div>
+                                    <div class="play-overlay" onclick="playVideo('qRUSKrHT1Y4')"><i class="fa-solid fa-play"></i></div>
+                                </div>
+                                <div class="edu-meta-body">
+                                    <div class="instructor">Aleksandr Lamkov</div>
+                                    <h4>C# OOP Dasturlash Principlari</h4>
+                                    <div class="rating-row">
+                                        <span class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></span>
+                                        <span class="stars-val">4.7</span>
+                                    </div>
+                                    <div class="stats-row">
+                                        <span><i class="fa-solid fa-users"></i> 512 o'quvchi</span>
+                                        <span><i class="fa-regular fa-circle-play"></i> 20 dars</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Course 6 -->
+                            <div class="eduverse-card-item" data-category="C++">
+                                <div class="edu-thumbnail-wrap">
+                                    <div class="edu-thumbnail-bg" style="background-image: linear-gradient(135deg, #00599C, #004482)">
+                                        <i class="fa-solid fa-gamepad big-thumbnail-icon"></i>
+                                    </div>
+                                    <div class="crown-badge" title="Premium Kurs"><i class="fa-solid fa-crown"></i></div>
+                                    <div class="play-overlay" onclick="playVideo('_cs2Hvw1MFk')"><i class="fa-solid fa-play"></i></div>
+                                </div>
+                                <div class="edu-meta-body">
+                                    <div class="instructor">Aleksandr Lamkov</div>
+                                    <h4>Создание игры C++ & Raylib</h4>
+                                    <div class="rating-row">
+                                        <span class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
+                                        <span class="stars-val">5.0</span>
+                                    </div>
+                                    <div class="stats-row">
+                                        <span><i class="fa-solid fa-users"></i> 324 o'quvchi</span>
+                                        <span><i class="fa-regular fa-circle-play"></i> 14 dars</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Course 7 -->
+                            <div class="eduverse-card-item" data-category="Unity">
+                                <div class="edu-thumbnail-wrap">
+                                    <div class="edu-thumbnail-bg" style="background-image: linear-gradient(135deg, #222222, #002233)">
+                                        <i class="fa-brands fa-unity icon-white big-thumbnail-icon"></i>
+                                    </div>
+                                    <div class="crown-badge" title="Premium Kurs"><i class="fa-solid fa-crown"></i></div>
+                                    <div class="play-overlay" onclick="playVideo('MqrSRrtBroc')"><i class="fa-solid fa-play"></i></div>
+                                </div>
+                                <div class="edu-meta-body">
+                                    <div class="instructor">Aleksandr Lamkov</div>
+                                    <h4>Unity 3D Game Design Course</h4>
+                                    <div class="rating-row">
+                                        <span class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
+                                        <span class="stars-val">4.9</span>
+                                    </div>
+                                    <div class="stats-row">
+                                        <span><i class="fa-solid fa-users"></i> 952 o'quvchi</span>
+                                        <span><i class="fa-regular fa-circle-play"></i> 38 dars</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 💻 <MARSCODE/> SAHIFA -->
+                <section class="tab-panel" id="panel-marscode">
+                    <div class="marscode-container">
+                        <!-- Banner -->
+                        <div class="cod-banner">
+                            <div class="cod-banner-overlay"></div>
+                            <div class="cod-banner-content">
+                                <h3>TOP KOMPANIYALARGA ISHGA KIRING</h3>
+                                <p>Dunyoning nufuzli IT kompaniyalari ishga qabul qilishda bu masalalarni yechish talab etiladi.</p>
+                                <button class="btn-banner-action">Masalalarni ko'rish <i class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                            <div class="banner-illustrator-glow">
+                                <i class="fa-solid fa-laptop-code code-bg-symbol"></i>
+                            </div>
+                        </div>
+
+                        <!-- Company tasks list -->
+                        <h4 class="sub-section-title">Kompaniyalar bo'yicha masalalar</h4>
+                        <div class="company-grid">
+                            <!-- Card 1 -->
+                            <div class="company-card">
+                                <div class="company-logo amazon-logo"><i class="fa-brands fa-amazon"></i></div>
+                                <div class="company-details">
+                                    <h4>Amazon</h4>
+                                    <p>10 ta masala | <span class="font-orange">0% bajarildi</span></p>
+                                </div>
+                                <div class="company-bar-outer">
+                                    <div class="company-bar-inner" style="width: 0%;"></div>
+                                </div>
+                                <button class="btn-comp-solve">Boshlash <i class="fa-solid fa-play"></i></button>
+                            </div>
+                            <!-- Card 2 -->
+                            <div class="company-card">
+                                <div class="company-logo google-logo"><i class="fa-brands fa-google"></i></div>
+                                <div class="company-details">
+                                    <h4>Google</h4>
+                                    <p>11 ta masala | <span class="font-orange">0% bajarildi</span></p>
+                                </div>
+                                <div class="company-bar-outer">
+                                    <div class="company-bar-inner" style="width: 0%;"></div>
+                                </div>
+                                <button class="btn-comp-solve">Boshlash <i class="fa-solid fa-play"></i></button>
+                            </div>
+                            <!-- Card 3 -->
+                            <div class="company-card">
+                                <div class="company-logo netflix-logo"><i class="fa-solid fa-film"></i></div>
+                                <div class="company-details">
+                                    <h4>Netflix</h4>
+                                    <p>10 ta masala | <span class="font-orange">0% bajarildi</span></p>
+                                </div>
+                                <div class="company-bar-outer">
+                                    <div class="company-bar-inner" style="width: 0%;"></div>
+                                </div>
+                                <button class="btn-comp-solve">Boshlash <i class="fa-solid fa-play"></i></button>
+                            </div>
+                            <!-- Card 4 -->
+                            <div class="company-card">
+                                <div class="company-logo facebook-logo"><i class="fa-brands fa-facebook-f"></i></div>
+                                <div class="company-details">
+                                    <h4>Facebook</h4>
+                                    <p>12 ta masala | <span class="font-orange">0% bajarildi</span></p>
+                                </div>
+                                <div class="company-bar-outer">
+                                    <div class="company-bar-inner" style="width: 0%;"></div>
+                                </div>
+                                <button class="btn-comp-solve">Boshlash <i class="fa-solid fa-play"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 📝 BLOG SAHIFA -->
+                <section class="tab-panel" id="panel-blog">
+                    <div class="blog-container">
+                        <!-- Post Publisher -->
+                        <div class="glass-card post-box-card">
+                            <div class="post-box-hdr">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Saidaziz" alt="Avatar" class="avatar-sm">
+                                <input type="text" id="post-input-text" placeholder="Bugun kayfiyatingiz qanday? 🪙">
+                            </div>
+                            <div class="post-box-actions">
+                                <button class="btn-image-upload" onclick="triggerMockUpload()"><i class="fa-regular fa-image"></i> Rasm yuklash</button>
+                                <button class="btn-primary" onclick="submitPost()">Post qilish</button>
+                            </div>
+                        </div>
+
+                        <!-- Posts Feed wrapper -->
+                        <div class="blog-feed-list" id="feed-container">
+                            <!-- Dynamic items get injected here via python session, default items: -->
+                            <!-- Post 1 -->
+                            <div class="feed-card">
+                                <div class="feed-card-header">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mustafa" class="feed-avatar">
+                                    <div class="feed-author-meta">
+                                        <div class="feed-author-name">Nurumbetov Mustafa</div>
+                                        <div class="feed-time">Bugun, 10:24</div>
+                                    </div>
+                                    <i class="fa-solid fa-ellipsis feed-options-dot"></i>
+                                </div>
+                                
+                                <div class="feed-content-body">
+                                    <p class="post-text">Bugun MarsCode platformasida typing test bo'yicha yangi shaxsiy rekordimni o'rnatdim! 🚀 Harakat qilishdan to'xtamang!</p>
+                                    <div class="post-card-graphic">
+                                        <!-- Mock graphic screen for ACC & WPM records -->
+                                        <div class="stat-badge-graphic">
+                                            <div class="mock-card-data-accent">Shaxsiy rekord: 15 SEC, 36 WPM, 100% ACC</div>
+                                            <div class="sparkling-glow"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="feed-actions-counts">
+                                    <button class="feed-action-btn like-btn" onclick="toggleLike(1, this)">
+                                        <i class="fa-regular fa-heart"></i>
+                                        <span class="like-counts">24</span>
+                                    </button>
+                                    <button class="feed-action-btn comment-trigger-btn">
+                                        <i class="fa-regular fa-comment"></i>
+                                        <span class="comment-counts">2</span>
+                                    </button>
+                                </div>
+
+                                <div class="comments-section-block">
+                                    <div class="comments-list">
+                                        <div class="comment-item">
+                                            <strong>Saidaxmatov Saidaziz:</strong>
+                                            <span>Dahshat natijada do'stim! Tabriklayman! 🔥</span>
+                                        </div>
+                                        <div class="comment-item">
+                                            <strong>Otabek:</strong>
+                                            <span>Qoyil, men ham yetib olaman yaqinda!</span>
+                                        </div>
+                                    </div>
+                                    <div class="comment-input-row">
+                                        <input type="text" placeholder="Comment..." class="comment-box-input" onkeydown="handleCommentSubmit(event, 1, this)">
+                                        <button class="btn-send-comment" onclick="sendCommentClick(1, this)"><i class="fa-solid fa-paper-plane"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 💳 ONLAYN TO'LOV SAHIFA -->
+                <section class="tab-panel" id="panel-payment">
+                    <div class="payment-wrapper">
+                        <!-- Left column: Payment Info -->
+                        <div class="glass-card bill-details-pane">
+                            <h3>To'lov ma'lumotlari</h3>
+                            <p class="card-sub text-muted">Abonement qarz va ma'lumotlari</p>
+                            
+                            <div class="bill-info-items">
+                                <div class="bill-item">
+                                    <span class="info-lbl">O'quvchi:</span>
+                                    <span class="info-val">Saidaxmatov Saidaziz</span>
+                                </div>
+                                <div class="bill-item">
+                                    <span class="info-lbl">Filial:</span>
+                                    <span class="info-val">TINCHLIK</span>
+                                </div>
+                                <div class="bill-item highlight-bill">
+                                    <span class="info-lbl">To'lov uchun:</span>
+                                    <span class="info-val" id="text-due-value">100,000 so'm</span>
+                                </div>
+                            </div>
+
+                            <div class="credit-card-simulation animate-neon-glow">
+                                <div class="chip-graphic"></div>
+                                <div class="card-brand"><i class="fa-solid fa-globe"></i> MARS CARD</div>
+                                <div class="card-num-sim">**** **** **** 8175</div>
+                                <div class="card-holder-name">SAIDAXMATOV SAIDAZIZ</div>
+                            </div>
+                        </div>
+
+                        <!-- Right column: Amount execution -->
+                        <div class="glass-card bill-action-pane">
+                            <h3>To'lov summasi</h3>
+                            <p class="card-sub font-gray">Summani kiriting va to'lovni tasdiqlang</p>
+                            
+                            <div class="amount-field-wrap">
+                                <label for="payment-amount-val">To'lov miqdori (so'm)</label>
+                                <input type="number" id="payment-amount-val" value="100000" oninput="updatePaymentBtnLabel(this.value)">
+                            </div>
+
+                            <div class="debt-status-display">
+                                <span class="debt-lbl">Umumiy qarz yoki balans:</span>
+                                <span class="debt-val" id="text-debt-value">1,090,000 so'm</span>
+                            </div>
+
+                            <button class="btn-primary pay-exec-btn w-full" id="execute-pay-btn" onclick="executeOnlinePayment()">
+                                <span>To'lov qilish 100,000 so'm</span> <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 🛍 SPACE SHOP SAHIFA -->
+                <section class="tab-panel" id="panel-shop">
+                    <div class="shop-wrapper">
+                        <!-- Upper Tabs -->
+                        <div class="shop-tabs">
+                            <button class="shop-tab active-shop-tab" onclick="switchShopTab('SPACE SHOP')">SPACE SHOP</button>
+                            <button class="shop-tab" onclick="switchShopTab('HERO SHOP')">HERO SHOP</button>
+                        </div>
+
+                        <!-- Products Grid -->
+                        <div class="products-grid" id="shop-products-grid">
+                            <!-- Cards get loaded or rendered here, default matching: -->
+                            <!-- Item 1 -->
+                            <div class="product-card" id="shop-item-pen">
+                                <div class="product-visual placeholder-pen">
+                                    <i class="fa-solid fa-pen-nib shop-item-icon"></i>
+                                </div>
+                                <div class="product-details">
+                                    <h4>Mars Pen</h4>
+                                    <div class="price-stock-row">
+                                        <span class="price-coin"><i class="fa-solid fa-coins"></i> 49</span>
+                                        <span class="stock-left out">0 ta qoldi</span>
+                                    </div>
+                                </div>
+                                <button class="btn-buy disabled-buy" onclick="buyShopItem('pen', 49, 0)">Sotib olish <i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                            <!-- Item 2 -->
+                            <div class="product-card" id="shop-item-sticker">
+                                <div class="product-visual placeholder-sticker">
+                                    <i class="fa-solid fa-note-sticky shop-item-icon"></i>
+                                </div>
+                                <div class="product-details">
+                                    <h4>Keyboard Sticker</h4>
+                                    <div class="price-stock-row">
+                                        <span class="price-coin"><i class="fa-solid fa-coins"></i> 49</span>
+                                        <span class="stock-left" id="stock-sticker">4 ta qoldi</span>
+                                    </div>
+                                </div>
+                                <button class="btn-buy" onclick="buyShopItem('sticker', 49, 4)">Sotib olish <i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                            <!-- Item 3 -->
+                            <div class="product-card" id="shop-item-strobar">
+                                <div class="product-visual placeholder-strobar">
+                                    <i class="fa-solid fa-bolt-lightning shop-item-icon"></i>
+                                </div>
+                                <div class="product-details">
+                                    <h4>Strobar</h4>
+                                    <div class="price-stock-row">
+                                        <span class="price-coin"><i class="fa-solid fa-coins"></i> 49</span>
+                                        <span class="stock-left" id="stock-strobar">63 ta qoldi</span>
+                                    </div>
+                                </div>
+                                <button class="btn-buy" onclick="buyShopItem('strobar', 49, 63)">Sotib olish <i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                            <!-- Item 4 -->
+                            <div class="product-card" id="shop-item-notepad">
+                                <div class="product-visual placeholder-notepad">
+                                    <i class="fa-solid fa-book shop-item-icon"></i>
+                                </div>
+                                <div class="product-details">
+                                    <h4>Notepad</h4>
+                                    <div class="price-stock-row">
+                                        <span class="price-coin"><i class="fa-solid fa-coins"></i> 149</span>
+                                        <span class="stock-left" id="stock-notepad">5 ta qoldi</span>
+                                    </div>
+                                </div>
+                                <button class="btn-buy" onclick="buyShopItem('notepad', 149, 5)">Sotib olish <i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                            <!-- Item 5 -->
+                            <div class="product-card" id="shop-item-rug">
+                                <div class="product-visual placeholder-rug">
+                                    <i class="fa-solid fa-rug shop-item-icon"></i>
+                                </div>
+                                <div class="product-details">
+                                    <h4>Mars Rug</h4>
+                                    <div class="price-stock-row">
+                                        <span class="price-coin"><i class="fa-solid fa-coins"></i> 149</span>
+                                        <span class="stock-left" id="stock-rug">5 ta qoldi</span>
+                                    </div>
+                                </div>
+                                <button class="btn-buy" onclick="buyShopItem('rug', 149, 5)">Sotib olish <i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                            <!-- Item 6 -->
+                            <div class="product-card" id="shop-item-keychain">
+                                <div class="product-visual placeholder-keychain">
+                                    <i class="fa-solid fa-key shop-item-icon"></i>
+                                </div>
+                                <div class="product-details">
+                                    <h4>Keychain</h4>
+                                    <div class="price-stock-row">
+                                        <span class="price-coin"><i class="fa-solid fa-coins"></i> 149</span>
+                                        <span class="stock-left" id="stock-keychain">15 ta qoldi</span>
+                                    </div>
+                                </div>
+                                <button class="btn-buy" onclick="buyShopItem('keychain', 149, 15)">Sotib olish <i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                            <!-- Item 7 -->
+                            <div class="product-card" id="shop-item-stand">
+                                <div class="product-visual placeholder-stand">
+                                    <i class="fa-solid fa-mobile-screen-button shop-item-icon"></i>
+                                </div>
+                                <div class="product-details">
+                                    <h4>Phone Stand</h4>
+                                    <div class="price-stock-row">
+                                        <span class="price-coin"><i class="fa-solid fa-coins"></i> 199</span>
+                                        <span class="stock-left" id="stock-stand">2 ta qoldi</span>
+                                    </div>
+                                </div>
+                                <button class="btn-buy" onclick="buyShopItem('stand', 199, 2)">Sotib olish <i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                            <!-- Item 8 -->
+                            <div class="product-card" id="shop-item-mug">
+                                <div class="product-visual placeholder-mug">
+                                    <i class="fa-solid fa-mug-hot shop-item-icon"></i>
+                                </div>
+                                <div class="product-details">
+                                    <h4>Mug</h4>
+                                    <div class="price-stock-row">
+                                        <span class="price-coin"><i class="fa-solid fa-coins"></i> 199</span>
+                                        <span class="stock-left out">0 ta qoldi</span>
+                                    </div>
+                                </div>
+                                <button class="btn-buy disabled-buy" onclick="buyShopItem('mug', 199, 0)">Sotib olish <i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 🧑‍🏫 TEACHER DASHBOARD PANEL -->
+                <section class="tab-panel" id="panel-teacher-home">
+                    <div class="teacher-grid">
+                        <div class="teacher-main-col">
+                            <!-- Stats Row -->
+                            <div class="teacher-stats-row">
+                                <div class="teacher-stat-card">
+                                    <div class="tstat-icon-bg bg-blue"><i class="fa-solid fa-users"></i></div>
+                                    <div class="tstat-info">
+                                        <div class="tstat-label">Guruhlar</div>
+                                        <div class="tstat-value">8 ta</div>
+                                    </div>
+                                </div>
+                                <div class="teacher-stat-card">
+                                    <div class="tstat-icon-bg bg-green"><i class="fa-solid fa-user"></i></div>
+                                    <div class="tstat-info">
+                                        <div class="tstat-label">O'quvchilar</div>
+                                        <div class="tstat-value">124 ta</div>
+                                    </div>
+                                </div>
+                                <div class="teacher-stat-card">
+                                    <div class="tstat-icon-bg bg-yellow"><i class="fa-solid fa-crown"></i></div>
+                                    <div class="tstat-info">
+                                        <div class="tstat-label">Reyting</div>
+                                        <div class="tstat-value">4.9/5</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- My Groups -->
+                            <div class="glass-card">
+                                <div class="group-card-header">
+                                    <h3 class="card-headings">Mening Guruhlarim</h3>
+                                    <button class="btn-outline btn-sm">Barcha guruhlar</button>
+                                </div>
+                                <div class="groups-list">
+                                    <div class="group-row">
+                                        <div class="group-icon-box">nB</div>
+                                        <div class="group-info">
+                                            <div class="group-name">nBPro-340</div>
+                                            <div class="group-sub">18 ta o'quvchi • Back-End PRO</div>
+                                        </div>
+                                        <div class="group-progress-area">
+                                            <div class="gp-labels"><span>Progress</span><span>45%</span></div>
+                                            <div class="gp-bar"><div class="gp-bar-fill" style="width:45%"></div></div>
+                                        </div>
+                                        <button class="btn-icon-sm"><i class="fa-solid fa-chevron-right"></i></button>
+                                    </div>
+                                    <div class="group-row">
+                                        <div class="group-icon-box">nB</div>
+                                        <div class="group-info">
+                                            <div class="group-name">nBPro-341</div>
+                                            <div class="group-sub">18 ta o'quvchi • Back-End PRO</div>
+                                        </div>
+                                        <div class="group-progress-area">
+                                            <div class="gp-labels"><span>Progress</span><span>60%</span></div>
+                                            <div class="gp-bar"><div class="gp-bar-fill" style="width:60%"></div></div>
+                                        </div>
+                                        <button class="btn-icon-sm"><i class="fa-solid fa-chevron-right"></i></button>
+                                    </div>
+                                    <div class="group-row">
+                                        <div class="group-icon-box">FE</div>
+                                        <div class="group-info">
+                                            <div class="group-name">FE-201</div>
+                                            <div class="group-sub">18 ta o'quvchi • Back-End PRO</div>
+                                        </div>
+                                        <div class="group-progress-area">
+                                            <div class="gp-labels"><span>Progress</span><span>75%</span></div>
+                                            <div class="gp-bar"><div class="gp-bar-fill" style="width:75%"></div></div>
+                                        </div>
+                                        <button class="btn-icon-sm"><i class="fa-solid fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Attendance -->
+                            <div class="glass-card">
+                                <h3 class="card-headings"><i class="fa-solid fa-clipboard-check text-green"></i> Bugungi Yo'qlama (Attendance)</h3>
+                                <div class="attendance-empty">
+                                    <p>Hozirda faol dars mavjud emas</p>
+                                    <button class="btn-primary">Darsni boshlash</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Sidebar -->
+                        <div class="teacher-side-col">
+                            <!-- Pending Homework -->
+                            <div class="glass-card">
+                                <h4 class="card-headings text-sm">Tekshirilishi kutilayotgan vazifalar</h4>
+                                <div class="hw-list">
+                                    <div class="hw-item">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=hw1" class="hw-avatar">
+                                        <div class="hw-info">
+                                            <div class="hw-student">Ali Valiyev</div>
+                                            <div class="hw-task">Node.js API project</div>
+                                        </div>
+                                        <span class="hw-date-badge">Bugun</span>
+                                    </div>
+                                    <div class="hw-item">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=hw2" class="hw-avatar">
+                                        <div class="hw-info">
+                                            <div class="hw-student">Dilnoza Karimova</div>
+                                            <div class="hw-task">Express middleware</div>
+                                        </div>
+                                        <span class="hw-date-badge">Bugun</span>
+                                    </div>
+                                    <div class="hw-item">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=hw3" class="hw-avatar">
+                                        <div class="hw-info">
+                                            <div class="hw-student">Jasur Toshmatov</div>
+                                            <div class="hw-task">REST API design</div>
+                                        </div>
+                                        <span class="hw-date-badge">Kecha</span>
+                                    </div>
+                                </div>
+                                <button class="btn-link mt-2 text-center w-full">Barchasini ko'rish</button>
+                            </div>
+
+                            <!-- Rewards Station -->
+                            <div class="glass-card rewards-card bg-purple-gradient text-white">
+                                <h4 class="card-headings text-sm"><i class="fa-solid fa-crown text-yellow"></i> Mukofotlash Stantsiyasi</h4>
+                                <p class="reward-desc">O'quvchilarga a'lo ishtiroki uchun XP va Coin taqdim eting</p>
+                                <button class="btn-white-solid w-full">Mukofotlash</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 👑 ADMIN DASHBOARD PANEL -->
+                <section class="tab-panel" id="panel-admin-home">
+                    <div class="admin-grid">
+                        <div class="admin-main-col">
+                            <!-- Analytics Chart -->
+                            <div class="glass-card">
+                                <h3 class="card-headings"><i class="fa-solid fa-chart-column text-blue"></i> Platforma Analitikasi</h3>
+                                <div class="admin-chart-area" id="admin-chart">
+                                    <div class="chart-bar" data-value="45" style="--bar-h:45%"><span class="chart-label">Yan</span></div>
+                                    <div class="chart-bar alt" data-value="65" style="--bar-h:65%"><span class="chart-label">Feb</span></div>
+                                    <div class="chart-bar" data-value="30" style="--bar-h:30%"><span class="chart-label">Mar</span></div>
+                                    <div class="chart-bar alt" data-value="85" style="--bar-h:85%"><span class="chart-label">Apr</span></div>
+                                    <div class="chart-bar" data-value="55" style="--bar-h:55%"><span class="chart-label">May</span></div>
+                                    <div class="chart-bar alt" data-value="90" style="--bar-h:90%"><span class="chart-label">Iyun</span></div>
+                                    <div class="chart-bar" data-value="70" style="--bar-h:70%"><span class="chart-label">Iyul</span></div>
+                                    <div class="chart-bar alt" data-value="40" style="--bar-h:40%"><span class="chart-label">Avg</span></div>
+                                    <div class="chart-bar" data-value="80" style="--bar-h:80%"><span class="chart-label">Sen</span></div>
+                                    <div class="chart-bar alt" data-value="60" style="--bar-h:60%"><span class="chart-label">Okt</span></div>
+                                    <div class="chart-bar" data-value="95" style="--bar-h:95%"><span class="chart-label">Noy</span></div>
+                                    <div class="chart-bar alt" data-value="75" style="--bar-h:75%"><span class="chart-label">Dek</span></div>
+                                </div>
+                            </div>
+
+                            <div class="admin-split-row">
+                                <!-- Quick Actions -->
+                                <div class="glass-card">
+                                    <h3 class="card-headings">Tezkor amallar</h3>
+                                    <div class="quick-actions-grid">
+                                        <button class="qa-btn">
+                                            <i class="fa-solid fa-user-plus qa-icon orange"></i>
+                                            <span>Yangi talaba</span>
+                                        </button>
+                                        <button class="qa-btn">
+                                            <i class="fa-solid fa-book-open qa-icon purple"></i>
+                                            <span>Yangi kurs</span>
+                                        </button>
+                                        <button class="qa-btn">
+                                            <i class="fa-solid fa-bag-shopping qa-icon teal"></i>
+                                            <span>Shop item</span>
+                                        </button>
+                                        <button class="qa-btn">
+                                            <i class="fa-solid fa-gear qa-icon golden"></i>
+                                            <span>Sozlamalar</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Shop Management -->
+                                <div class="glass-card">
+                                    <h3 class="card-headings">Space Shop Boshqaruvi</h3>
+                                    <div class="shop-mgmt-stats">
+                                        <div class="mgmt-row"><span class="mgmt-lbl">Jami mahsulotlar</span><span class="mgmt-val">45 ta</span></div>
+                                        <div class="mgmt-row"><span class="mgmt-lbl">Sotilgan (bu oy)</span><span class="mgmt-val">128 ta</span></div>
+                                    </div>
+                                    <div class="mgmt-divider"></div>
+                                    <button class="btn-primary w-full">Inventarizatsiya</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Live Activity -->
+                        <div class="admin-side-col">
+                            <div class="glass-card activity-card">
+                                <div class="activity-hdr">Live Activity</div>
+                                <div class="activity-feed">
+                                    <div class="activity-item">
+                                        <div class="act-user">Jasur</div>
+                                        <div class="act-action">Space Shopdan Hoodie sotib oldi</div>
+                                        <div class="act-time">2 daq avval</div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="act-user">Teacher Ali</div>
+                                        <div class="act-action">FE-201 guruhiga dars qo'shdi</div>
+                                        <div class="act-time">12 daq avval</div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="act-user">Admin</div>
+                                        <div class="act-action">Yangi "Cyber Security" kursi yaratildi</div>
+                                        <div class="act-time">45 daq avval</div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="act-user">Nodira</div>
+                                        <div class="act-action">XP reytingida 1-o'ringa chiqdi</div>
+                                        <div class="act-time">1 soat avval</div>
+                                    </div>
+                                </div>
+                                <button class="btn-link mt-2 text-center w-full">Show full log</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+            </main>
+        </div>
+    </div>
+
+    <!-- YouTube video player dialog modal -->
+    <div class="video-modal-backdrop" id="video-modal" onclick="closeVideoModal()">
+        <div class="video-modal-body" onclick="event.stopPropagation()">
+            <button class="video-modal-close" onclick="closeVideoModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="iframe-container">
+                <iframe id="youtube-player-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <div id="video-modal-title" class="video-title-desc">Dars videosi</div>
+        </div>
+    </div>
+
+    <!-- 3D Mars Robot mascot (Left corner) -->
+    <div class="mascot-robot-widget" title="Mars Robot" onclick="speakRobot()">
+        <div class="robot-speech-bubble" id="robot-bubble">Salom, do'stim! Bugun yangi masalalarni yechamizmi? 🤖✨</div>
+        <svg class="robot-svg" viewBox="0 0 100 100">
+            <!-- Antenna -->
+            <line x1="50" y1="20" x2="50" y2="5" stroke="#FF6333" stroke-width="4" stroke-linecap="round" />
+            <circle cx="50" cy="5" r="5" fill="#FFD343" />
+            <!-- Head -->
+            <rect x="25" y="20" width="50" height="36" rx="10" fill="#2B303A" stroke="#1A1D20" stroke-width="3" />
+            <!-- Glowing Eyes -->
+            <circle cx="40" cy="35" r="5" fill="#00E5FF" class="eye-glow" />
+            <circle cx="60" cy="35" r="5" fill="#00E5FF" class="eye-glow" />
+            <!-- Cheeks -->
+            <rect x="29" y="44" width="6" height="4" rx="2" fill="#FF6333" opacity="0.8" />
+            <rect x="65" y="44" width="6" height="4" rx="2" fill="#FF6333" opacity="0.8" />
+            <!-- Mouth / Led Screen -->
+            <rect x="42" y="43" width="16" height="5" rx="2.5" fill="#1A1D20" />
+            <line x1="45" y1="45" x2="55" y2="45" stroke="#00E5FF" stroke-width="2" stroke-linecap="round" class="mouth-wave" />
+            <!-- Ears -->
+            <rect x="20" y="30" width="5" height="16" rx="2.5" fill="#FF6333" />
+            <rect x="75" y="30" width="5" height="16" rx="2.5" fill="#FF6333" />
+            <!-- Neck -->
+            <rect x="44" y="56" width="12" height="8" fill="#1A1D20" />
+            <!-- Body -->
+            <rect x="20" y="64" width="60" height="34" rx="12" fill="#2B303A" stroke="#1A1D20" stroke-width="3" />
+            <!-- Mars badge -->
+            <circle cx="50" cy="78" r="8" fill="#FF6333" />
+            <circle cx="50" cy="78" r="4" fill="#FFFFFF" class="core-glow" />
+        </svg>
+        <div class="shadow-mascot"></div>
+    </div>
+
+    <!-- AI Helper helper (Right corner) -->
+    <div class="ai-helper-btn" onclick="toggleAIChat()" title="AI yordamchi">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span class="helper-pulse"></span>
+    </div>
+
+    <!-- AI Helper drawer -->
+    <div class="ai-chat-drawer" id="ai-chat-drawer">
+        <div class="chat-header">
+            <div class="chat-hdr-left">
+                <i class="fa-solid fa-robot"></i>
+                <div>
+                    <h4>MARS AI Yordamchi</h4>
+                    <span>Onlayn yordamchi</span>
+                </div>
+            </div>
+            <button class="btn-close-chat" onclick="toggleAIChat()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="chat-messages" id="chat-messages-wrap">
+            <div class="msg-item bot-msg">
+                <p>Salom! Men Mars SPACE sun'iy intellekt yordamchisiman. Sizga platformadan foydalanish, darslar yoki MarsCode bo'yicha savollaringizda ko'maklasha olaman! 💫</p>
+                <span class="msg-time">Hozir</span>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="ai-user-message-input" placeholder="Xabarni yozing..." onkeydown="handleChatSubmit(event)">
+            <button class="btn-send-message" onclick="sendAIChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- main application logic -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
