@@ -136,19 +136,9 @@
                         <div class="role-dropdown" id="role-dropdown">
                             <div class="role-dd-header">Mening profilim</div>
                             <div class="role-dd-divider"></div>
-                            <button class="role-dd-item" onclick="event.stopPropagation(); switchRole('student')">
-                                <i class="fa-solid fa-user-graduate"></i> Student Paneli
-                            </button>
-                            <button class="role-dd-item" onclick="event.stopPropagation(); switchRole('teacher')">
-                                <i class="fa-solid fa-chalkboard-user"></i> Teacher Paneli
-                            </button>
-                            <button class="role-dd-item" onclick="event.stopPropagation(); switchRole('admin')">
-                                <i class="fa-solid fa-crown"></i> Admin Paneli
-                            </button>
-                            <div class="role-dd-divider"></div>
-                            <button class="role-dd-item role-dd-logout">
+                            <a class="role-dd-item role-dd-logout" href="{{ url_for('main.logout') }}" style="text-decoration:none; color:inherit; display:block;">
                                 <i class="fa-solid fa-right-from-bracket"></i> Chiqish
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -219,7 +209,7 @@
                                         <div class="wpm-number" id="home-wpm">45</div>
                                         <div class="wpm-unit">WPM (Tezlik)</div>
                                     </div>
-                                    <button class="btn-outline wpm-btn" onclick="startTypingSimulator()">Testni boshlash</button>
+                                    <a href="{{ url_for('main.typing_test') }}" style="text-decoration:none;"><button class="btn-outline wpm-btn">Testni boshlash</button></a>
                                 </div>
                             </div>
 

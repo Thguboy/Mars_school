@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARS SPACE | Typing</title>
+    <!-- Google Fonts: Inter and Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+            background-color: #0b0e14;
+            color: #d1d0c5;
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .nav-back {
+            position: absolute;
+            top: 30px;
+            left: 50px;
+            color: #646669;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.2s;
+        }
+        .nav-back:hover { color: #d1d0c5; }
+        .nav-back i { font-size: 20px; }
+
+        .brand-logo {
+            position: absolute;
+            top: 30px;
+            left: 200px;
+            font-family: 'Inter', sans-serif;
+            color: #e2b714;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .typing-container {
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            color: #646669;
+            font-size: 20px;
+        }
+
+        .time-tracker {
+            color: #e2b714;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        /* Words Container */
+        .word-area {
+            font-size: 26px;
+            line-height: 1.5;
+            color: #646669; /* Unfocused gray */
+            position: relative;
+            user-select: none;
+            filter: blur(0px); /* Adjust to emulate focus */
+            display: flex;
+            flex-wrap: wrap;
+            height: 120px;
+            overflow: hidden;
+            align-content: flex-start;
+        }
+
+        .word {
+            margin: 0 5px 10px 5px;
+            display: inline-block;
+        }
+
+        .letter {
+            border-bottom: 2px solid transparent;
+        }
+        .letter.correct {
+            color: #d1d0c5;
+        }
+        .letter.incorrect {
+            color: #ca4754; 
+        }
+        .letter.incorrect.extra {
+            color: #7e2a33;
+        }
+        
+        /* Cursor */
+        #caret {
+            width: 2px;
+            height: 30px;
+            background-color: #e2b714;
+            position: absolute;
+            transition: all 0.1s ease;
+            animation: blink 1s infinite alternate;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .refresh-btn {
+            display: block;
+            margin: 40px auto 0;
+            background: none;
+            border: none;
+            color: #646669;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .refresh-btn:hover { color: #d1d0c5; }
+
+        /* Hidden input */
+        #hidden-input {
+            opacity: 0;
+            position: absolute;
+            top: -100px;
+            left: -100px;
+        }
+
+        /* Results Screen */
+        .results-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0b0e14;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            display: none;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .results-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            text-align: left;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .metric-title {
+            color: #646669;
+            font-size: 24px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .metric-value {
+            color: #e2b714;
+            font-size: 64px;
+            font-weight: 700;
+        }
+        .metric-value.acc { color: #d1d0c5; }
+        
+        .restart-tip {
+            margin-top: 50px;
+            color: #646669;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .restart-tip kbd {
+            background: #2c2e31;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #d1d0c5;
+        }
+
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('main.index') }}" class="nav-back"><i class="fa-solid fa-arrow-left"></i> Oq'uvchi paneliga qaytish</a>
+    <div class="brand-logo"><i class="fa-solid fa-keyboard" style="color: #646669;"></i> marsType</div>
+
+    <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    
+    <div class="typing-container">
+        <div class="top-bar">
+            <span></span>
+            <div class="time-tracker" id="timer">30</div>
+        </div>
+
+        <div id="caret"></div>
+        <div class="word-area" id="word-area" onclick="focusInput()">
+            <!-- JS inserts letters and words here -->
+        </div>
+
+        <button class="refresh-btn" onclick="initTest()"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+
+    <!-- Results Overview -->
+    <div class="results-overlay" id="results-overlay">
+        <div class="results-box">
+            <div class="metric">
+                <span class="metric-title">wpm</span>
+                <span class="metric-value" id="result-wpm">0</span>
+            </div>
+            <div class="metric">
+                <span class="metric-title">acc</span>
+                <span class="metric-value acc" id="result-acc">0%</span>
+            </div>
+        </div>
+        <div class="restart-tip">Qayta boshlash uchun <kbd>Tab</kbd> bosing va <kbd>Enter</kbd> qiling (yoki yuqoridagini)</div>
+        <button class="refresh-btn" onclick="initTest()"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+
+    <script>
+        const wordList = [
+            "the", "be", "to", "of", "and", "a", "in", "that", "have", "i",
+            "it", "for", "not", "on", "with", "he", "as", "you", "do", "at", 
+            "this", "but", "his", "by", "from", "they", "we", "say", "her", "she", 
+            "or", "an", "will", "my", "one", "all", "would", "there", "their", "what", 
+            "so", "up", "out", "if", "about", "who", "get", "which", "go", "me",
+            "javascript", "python", "developer", "mars", "space", "computer", "backend", "frontend",
+            "database", "server", "algorithm", "design", "network", "code", "programming", "technology"
+        ];
+
+        let words = [];
+        let currentWordIndex = 0;
+        let currentLetterIndex = 0;
+        let isStarted = false;
+        let timer = 30;
+        let interval;
+        let totalTyped = 0;
+        let correctTyped = 0;
+        let incorrectTyped = 0;
+
+        const wordArea = document.getElementById('word-area');
+        const input = document.getElementById('hidden-input');
+        const caret = document.getElementById('caret');
+        const timeDisplay = document.getElementById('timer');
+        const resultsOverlay = document.getElementById('results-overlay');
+
+        function generateWords(count) {
+            let res = [];
+            for (let i = 0; i < count; i++) {
+                res.push(wordList[Math.floor(Math.random() * wordList.length)]);
+            }
+            return res;
+        }
+
+        function renderWords() {
+            wordArea.innerHTML = '';
+            words.forEach((w, wi) => {
+                const wordEl = document.createElement('div');
+                wordEl.classList.add('word');
+                if(wi === 0) wordEl.classList.add('active'); // currently active word tag if we want to style it
+                
+                let chars = w.split('');
+                chars.forEach((c, ci) => {
+                    const letterEl = document.createElement('span');
+                    letterEl.classList.add('letter');
+                    letterEl.innerText = c;
+                    wordEl.appendChild(letterEl);
+                });
+                wordArea.appendChild(wordEl);
+            });
+            updateCaretPosition();
+        }
+
+        function updateCaretPosition() {
+            const activeWordEl = wordArea.children[currentWordIndex];
+            if (!activeWordEl) return;
+            
+            let targetLetter;
+            if (currentLetterIndex < activeWordEl.children.length) {
+                targetLetter = activeWordEl.children[currentLetterIndex];
+                caret.style.left = targetLetter.offsetLeft + 'px';
+                caret.style.top = targetLetter.offsetTop + 'px';
+            } else {
+                targetLetter = activeWordEl.children[activeWordEl.children.length - 1];
+                caret.style.left = targetLetter.offsetLeft + targetLetter.offsetWidth + 'px';
+                caret.style.top = targetLetter.offsetTop + 'px';
+            }
+            
+            if (activeWordEl.offsetTop > wordArea.offsetHeight / 2) {
+                // Scroll effect block implementation
+                const wordEls = document.querySelectorAll('.word');
+                if (currentWordIndex > 10) {
+                    for(let i=0; i<currentWordIndex-5; i++) {
+                       if(wordEls[i]) wordEls[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        function startTimer() {
+            if (isStarted) return;
+            isStarted = true;
+            interval = setInterval(() => {
+                timer--;
+                timeDisplay.innerText = timer;
+                if (timer <= 0) {
+                    endTest();
+                }
+            }, 1000);
+        }
+
+        function endTest() {
+            clearInterval(interval);
+            input.disabled = true;
+            
+            // Calculate WPM: (correct characters / 5) / time in minutes
+            const minutes = 30 / 60;
+            const wpm = Math.round((correctTyped / 5) / minutes);
+            const acc = totalTyped === 0 ? 0 : Math.round((correctTyped / totalTyped) * 100);
+
+            document.getElementById('result-wpm').innerText = wpm;
+            document.getElementById('result-acc').innerText = acc + '%';
+            resultsOverlay.style.display = 'flex';
+        }
+
+        function initTest() {
+            clearInterval(interval);
+            words = generateWords(150);
+            currentWordIndex = 0;
+            currentLetterIndex = 0;
+            isStarted = false;
+            timer = 30;
+            timeDisplay.innerText = timer;
+            totalTyped = 0;
+            correctTyped = 0;
+            incorrectTyped = 0;
+            input.disabled = false;
+            input.value = '';
+            resultsOverlay.style.display = 'none';
+            renderWords();
+            focusInput();
+        }
+
+        function focusInput() {
+            input.focus();
+        }
+
+        input.addEventListener('input', (e) => {
+            const activeWordEl = wordArea.children[currentWordIndex];
+            if (!activeWordEl) return;
+            
+            let val = input.value;
+            let lastChar = val[val.length - 1];
+            
+            // Prevent spaces when on first char of word
+            if(val === ' ' && currentLetterIndex === 0) {
+                input.value = '';
+                return;
+            }
+
+            startTimer();
+
+            // Handle spacebar
+            if (lastChar === ' ') {
+                // Ignore multiple spaces or spaces when word barely started
+                if(currentLetterIndex > 0) {
+                    currentWordIndex++;
+                    currentLetterIndex = 0;
+                }
+                input.value = '';
+                updateCaretPosition();
+                return;
+            }
+
+            // Normal typing match
+            const targetChar = activeWordEl.children[currentLetterIndex]?.innerText;
+            if (targetChar) {
+                totalTyped++;
+                if (lastChar === targetChar) {
+                    activeWordEl.children[currentLetterIndex].classList.add('correct');
+                    correctTyped++;
+                } else {
+                    activeWordEl.children[currentLetterIndex].classList.add('incorrect');
+                    incorrectTyped++;
+                }
+                currentLetterIndex++;
+            } else {
+                // typed extra characters past word length
+                const extraLetter = document.createElement('span');
+                extraLetter.classList.add('letter', 'incorrect', 'extra');
+                extraLetter.innerText = lastChar;
+                activeWordEl.appendChild(extraLetter);
+                currentLetterIndex++;
+                totalTyped++;
+                incorrectTyped++;
+            }
+            input.value = ''; // We always swallow input to just use the key events effectively
+            updateCaretPosition();
+        });
+
+        // Listen for backspace since input.value swallows the whole string
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace') {
+                const activeWordEl = wordArea.children[currentWordIndex];
+                if (currentLetterIndex > 0) {
+                    currentLetterIndex--;
+                    const letterEl = activeWordEl.children[currentLetterIndex];
+                    if (letterEl.classList.contains('extra')) {
+                        letterEl.remove();
+                    } else {
+                        // Undo typing stats realistically
+                        if(letterEl.classList.contains('correct')) {
+                            // Can't perfectly rewind accuracy but we can decrement visual
+                        }
+                        letterEl.classList.remove('correct', 'incorrect');
+                    }
+                    updateCaretPosition();
+                } else if (currentWordIndex > 0) {
+                    // Go back to previous word if we hit backspace on empty
+                    currentWordIndex--;
+                    currentLetterIndex = wordArea.children[currentWordIndex].children.length;
+                    
+                    // Cleanup trailing un-typed parts of previous word if any
+                    // For monkeytype style, we only go back if prev word had incorrect 
+                    // This is simple so we just rollback index
+                    updateCaretPosition();
+                }
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                initTest();
+            }
+        });
+
+        document.addEventListener('click', focusInput);
+        initTest();
+
+    </script>
+</body>
+</html>

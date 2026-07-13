@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARS SPACE | O'qituvchi Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .admin-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); padding: 20px;}
+        .admin-section { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 20px; }
+        .admin-section h3 { margin-top: 0; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;}
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ccc;}
+        .data-table th { color: #00e5ff; font-weight: 600; }
+        .admin-btn { padding: 8px 15px; background: linear-gradient(135deg, #00e5ff, #0055ff); border: none; border-radius: 5px; color: white; cursor: pointer; }
+        .admin-btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-graphic"><i class="fa-solid fa-cookie-bite logo-spin"></i></div>
+                <span class="logo-text">MARS <span class="accent-dot" style="color:#00e5ff;">.</span></span>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-item active">
+                    <i class="fa-solid fa-chalkboard-user"></i> <span>Asosiy Panel</span>
+                </button>
+            </nav>
+        </aside>
+
+        <div class="content-wrapper">
+            <header class="top-header">
+                <div class="header-left"><h2 class="section-title-label">O'qituvchi Paneli</h2></div>
+                <div class="header-right">
+                    <div class="profile-area">
+                        <div class="profile-name-block">
+                            <span class="profile-user-name">O'qituvchi</span>
+                        </div>
+                        <a href="{{ url_for('main.logout') }}" style="color: #ff6b6b; margin-left: 15px; text-decoration: none;"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-container" style="display:block; padding: 20px;">
+                <div class="admin-grid">
+                    <div class="admin-section">
+                        <h3><i class="fa-solid fa-users-viewfinder"></i> O'quvchilar va Davomat</h3>
+                        <table class="data-table">
+                            <tr><th>Ism</th><th>Coinlar</th><th>Amallar</th></tr>
+                            {% for student in students %}
+                            <tr>
+                                <td>{{ student.username }}</td>
+                                <td>{{ student.coins }}</td>
+                                <td>
+                                    <button class="admin-btn" style="padding:4px 8px; font-size:12px;" onclick="markAttendance({{ student.id }}, 'present')">Davomat (+)</button>
+                                    <button class="admin-btn" style="padding:4px 8px; font-size:12px; background: #ff6b6b;" onclick="markAttendance({{ student.id }}, 'absent')">Davomat (-)</button>
+                                    <button class="admin-btn" style="padding:4px 8px; font-size:12px; background: #eab308;" onclick="giveCoins({{ student.id }})">Coin berish</button>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="3">O'quvchilar mavjud emas</td></tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+
+                    <div class="admin-section">
+                        <h3><i class="fa-solid fa-book-open"></i> Mavzular</h3>
+                        <ul>
+                            {% for topic in topics %}
+                                <li style="color: #ccc; margin-bottom: 10px;">{{ topic.name }} - {{ topic.created_at.strftime('%Y-%m-%d') }}</li>
+                            {% else %}
+                                <li style="color: #ccc;">Mavzular yo'q</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        async function markAttendance(userId, status) {
+            const res = await fetch('/api/teacher/attendance', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: userId, status: status})
+            });
+            const result = await res.json();
+            if(result.success) {
+                alert("Davomat qilindi!");
+            } else {
+                alert("Xatolik!");
+            }
+        }
+
+        async function giveCoins(userId) {
+            const coins = prompt("Qancha coin bermoqchisiz?");
+            if(!coins) return;
+            const res = await fetch('/api/teacher/assign_coins', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: userId, coins: coins})
+            });
+            const result = await res.json();
+            if(result.success) {
+                alert("Coinlar qo'shildi!");
+                location.reload();
+            } else {
+                alert("Xatolik!");
+            }
+        }
+    </script>
+</body>
+</html>

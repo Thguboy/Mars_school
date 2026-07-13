@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARS SPACE | Tizimga kirish</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: #0b0e14;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+        }
+
+        #constellation-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .main-brand {
+            z-index: 10;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mars-logo-glow {
+            font-family: 'Outfit', sans-serif;
+            font-size: 55px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 4px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .mars-logo-icon {
+            color: #ff5722;
+            font-size: 40px;
+            text-shadow: 0 0 20px rgba(255, 87, 34, 0.8);
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from { text-shadow: 0 0 10px rgba(255, 87, 34, 0.6); transform: scale(1); }
+            to { text-shadow: 0 0 25px rgba(255, 87, 34, 1); transform: scale(1.05); }
+        }
+
+        /* Glassmorphism authentication box */
+        .auth-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.4);
+        }
+
+        /* Top header of box */
+        .box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .offer-link {
+            color: #b3b3b3;
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .lang-switch {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 5px 12px;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .lang-switch i { color: #ff5722; }
+
+        .auth-container h2 {
+            text-align: center;
+            color: #fff;
+            font-size: 22px;
+            margin: 0 0 5px 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .auth-container p.sub-text {
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            margin: 0 0 25px 0;
+        }
+
+        /* Toggle Tabs */
+        .tab-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            padding: 5px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #aaa;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: #fff;
+            color: #0b0e14;
+            font-weight: 600;
+        }
+
+        /* Forms */
+        .auth-form {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .auth-form.active-form {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 14px 15px;
+            color: #fff;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        .input-group input::placeholder {
+            color: #888;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff5722;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #cd7760; /* Mars clayish color */
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            background: #eb886e;
+            transform: translateY(-2px);
+        }
+
+        .bottom-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #aaa;
+        }
+        .bottom-link a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Alerts */
+        .flash-messages {
+            margin-bottom: 15px;
+        }
+        .flash-message {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center;
+        }
+        .flash-error { background: rgba(255, 87, 34, 0.2); border: 1px solid #ff5722; color: #ffab91; }
+        .flash-success { background: rgba(76, 175, 80, 0.2); border: 1px solid #4CAF50; color: #a5d6a7; }
+
+    </style>
+</head>
+<body>
+    
+    <!-- Background script animation container -->
+    <canvas id="constellation-canvas"></canvas>
+
+    <div class="main-brand">
+        <div class="mars-logo-glow">MARS <i class="fa-solid fa-compact-disc mars-logo-icon"></i></div>
+    </div>
+
+    <div class="auth-container">
+        <div class="box-header">
+            <a href="#" class="offer-link"><i class="fa-regular fa-file-lines"></i> Offerta</a>
+            <div class="lang-switch"><i class="fa-solid fa-globe"></i> O'zb</div>
+        </div>
+
+        <h2>Spacega xush kelibsiz</h2>
+        <p class="sub-text">Bugun nimani o'rganamiz?</p>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="tab-wrapper">
+            <button class="tab-btn active" id="tab-login" onclick="switchForm('login')">Log In</button>
+            <button class="tab-btn" id="tab-register" onclick="switchForm('register')">Sign In (Register)</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="form-login" class="auth-form active-form" action="{{ url_for('main.login') }}" method="POST">
+            <div class="input-group">
+                <input type="email" name="email" placeholder="Email/Mars ID" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="Parol" required>
+            </div>
+            <button type="submit" class="btn-submit">Kirish</button>
+            <div class="bottom-link">
+                Akkauntga ega emasmisiz? <a onclick="switchForm('register')">Ro'yhatdan o'tish</a>
+            </div>
+        </form>
+
+        <!-- Register Form -->
+        <form id="form-register" class="auth-form" action="{{ url_for('main.register') }}" method="POST">
+            <div class="input-group">
+                <input type="text" name="username" placeholder="To'liq Ismingiz" required>
+            </div>
+            <div class="input-group">
+                <input type="email" name="email" placeholder="Email (yangi)" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="Parol" required>
+            </div>
+            <button type="submit" class="btn-submit">Ro'yhatdan o'tish</button>
+            <div class="bottom-link">
+                Akkauntingiz bormi? <a onclick="switchForm('login')">Kirish</a>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        function switchForm(target) {
+            if(target === 'login') {
+                document.getElementById('form-login').classList.add('active-form');
+                document.getElementById('form-register').classList.remove('active-form');
+                document.getElementById('tab-login').classList.add('active');
+                document.getElementById('tab-register').classList.remove('active');
+            } else {
+                document.getElementById('form-register').classList.add('active-form');
+                document.getElementById('form-login').classList.remove('active-form');
+                document.getElementById('tab-register').classList.add('active');
+                document.getElementById('tab-login').classList.remove('active');
+            }
+        }
+
+        // Constellation animated background
+        const canvas = document.getElementById('constellation-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles;
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            const minW = Math.min(width, height);
+            const numParticles = Math.floor(minW / 6);
+
+            for (let i = 0; i < numParticles; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    opacity: Math.random() * 0.5 + 0.2
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                ctx.fill();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dist = Math.sqrt(Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2));
+
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(150, 150, 200, ${0.2 - dist/600})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', init);
+        init();
+        draw();
+    </script>
+</body>
+</html>

@@ -2,6 +2,10 @@ from flask import request, jsonify, session
 import random
 from app.api import bp
 from app.utils import init_session
+from app.models import User, Topic, Attendance
+from app import db
+from app.api import bp
+from app.utils import init_session
 
 @bp.route('/role', methods=['POST'])
 def switch_role():
@@ -13,6 +17,66 @@ def switch_role():
     session['role'] = new_role
     session.modified = True
     return jsonify({"success": True, "role": new_role})
+
+@bp.route('/admin/add_user', methods=['POST'])
+def add_user():
+    data = request.json or request.form
+    email = data.get('email')
+    username = data.get('username')
+    password = data.get('password')
+    role = data.get('role')
+    salary = data.get('salary', 0.0)
+
+    if User.query.filter_by(email=email).first():
+        return jsonify({"success": False, "message": "Elektron pochta band!"}), 400
+
+    new_user = User(username=username, email=email, role=role, salary=float(salary))
+    if password:
+        new_user.set_password(password)
+        
+    db.session.add(new_user)
+    db.session.commit()
+    
+    return jsonify({"success": True})
+
+@bp.route('/admin/update_salary', methods=['POST'])
+def update_salary():
+    data = request.json or request.form
+    user_id = data.get('user_id')
+    new_salary = data.get('salary')
+    
+    user = User.query.get(user_id)
+    if user and user.role == 'teacher':
+        user.salary = float(new_salary)
+        db.session.commit()
+        return jsonify({"success": True})
+    return jsonify({"success": False, "message": "O'qituvchi topilmadi!"}), 404
+
+@bp.route('/teacher/attendance', methods=['POST'])
+def mark_attendance():
+    data = request.json or request.form
+    user_id = data.get('user_id')
+    status = data.get('status')
+    
+    from datetime import date
+    
+    att = Attendance(user_id=user_id, status=status, date=date.today())
+    db.session.add(att)
+    db.session.commit()
+    return jsonify({"success": True})
+
+@bp.route('/teacher/assign_coins', methods=['POST'])
+def assign_coins():
+    data = request.json or request.form
+    user_id = data.get('user_id')
+    coins = int(data.get('coins', 0))
+    
+    user = User.query.get(user_id)
+    if user:
+        user.coins += coins
+        db.session.commit()
+        return jsonify({"success": True})
+    return jsonify({"success": False, "message": "Foydalanuvchi topilmadi"}), 404
 
 @bp.route('/stats', methods=['GET'])
 def get_stats():

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARS SPACE | Admin Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .admin-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); padding: 20px;}
+        .admin-section { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 20px; }
+        .admin-section h3 { margin-top: 0; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;}
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ccc;}
+        .data-table th { color: #ff6b6b; font-weight: 600; }
+        .admin-btn { padding: 8px 15px; background: linear-gradient(135deg, #c44dff, #ff6b6b); border: none; border-radius: 5px; color: white; cursor: pointer; }
+        .admin-btn:hover { opacity: 0.9; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; color: #aaa; margin-bottom: 5px; font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; box-sizing: border-box;}
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-graphic"><i class="fa-solid fa-cookie-bite logo-spin"></i></div>
+                <span class="logo-text">MARS <span class="accent-dot" style="color:#c44dff;">.</span></span>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-item active">
+                    <i class="fa-solid fa-crown"></i> <span>Asosiy Panel</span>
+                </button>
+            </nav>
+        </aside>
+
+        <div class="content-wrapper">
+            <header class="top-header">
+                <div class="header-left"><h2 class="section-title-label">Admin Paneli</h2></div>
+                <div class="header-right">
+                    <div class="profile-area">
+                        <div class="profile-name-block">
+                            <span class="profile-user-name">Admin</span>
+                        </div>
+                        <a href="{{ url_for('main.logout') }}" style="color: #ff6b6b; margin-left: 15px; text-decoration: none;"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-container" style="display:block; padding: 20px;">
+                <div class="admin-grid">
+                    <div class="admin-section">
+                        <h3><i class="fa-solid fa-user-plus"></i> Yangi foydalanuvchi qo'shish</h3>
+                        <form id="addUserForm">
+                            <div class="form-group">
+                                <label>F.I.SH / Ism</label>
+                                <input type="text" name="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Parol</label>
+                                <input type="password" name="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Rol</label>
+                                <select name="role" id="roleSelect" onchange="toggleSalaryField()">
+                                    <option value="student">O'quvchi</option>
+                                    <option value="teacher">O'qituvchi</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="salaryGroup" style="display:none;">
+                                <label>Oylik maosh (so'm)</label>
+                                <input type="number" name="salary" value="0">
+                            </div>
+                            <button type="button" class="admin-btn" onclick="submitUser()"><i class="fa-solid fa-plus"></i> Qo'shish</button>
+                        </form>
+                    </div>
+
+                    <div class="admin-section">
+                        <h3><i class="fa-solid fa-chalkboard-user"></i> O'qituvchilar</h3>
+                        <table class="data-table">
+                            <tr><th>Ism</th><th>Email</th><th>Oylik</th><th>Amallar</th></tr>
+                            {% for teacher in teachers %}
+                            <tr>
+                                <td>{{ teacher.username }}</td>
+                                <td>{{ teacher.email }}</td>
+                                <td>{{ teacher.salary }}</td>
+                                <td>
+                                    <button class="admin-btn" style="padding:4px 8px; font-size:12px;" onclick="updateSalary({{ teacher.id }})">Tahrir</button>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="4">O'qituvchilar mavjud emas</td></tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    
+                    <div class="admin-section">
+                        <h3><i class="fa-solid fa-users"></i> O'quvchilar</h3>
+                        <table class="data-table">
+                            <tr><th>Ism</th><th>Email</th><th>Coins</th></tr>
+                            {% for student in students %}
+                            <tr>
+                                <td>{{ student.username }}</td>
+                                <td>{{ student.email }}</td>
+                                <td>{{ student.coins }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="3">O'quvchilar mavjud emas</td></tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        function toggleSalaryField() {
+            const role = document.getElementById('roleSelect').value;
+            document.getElementById('salaryGroup').style.display = (role === 'teacher') ? 'block' : 'none';
+        }
+
+        async function submitUser() {
+            const form = document.getElementById('addUserForm');
+            const data = {
+                username: form.username.value,
+                email: form.email.value,
+                password: form.password.value,
+                role: form.role.value,
+                salary: form.salary.value
+            };
+
+            const res = await fetch('/api/admin/add_user', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if(result.success) {
+                alert("Muvaffaqiyatli qo'shildi!");
+                location.reload();
+            } else {
+                alert(result.message || "Xatolik ro'y berdi.");
+            }
+        }
+
+        async function updateSalary(userId) {
+            const newSal = prompt("Yangi oylik miqdorini kiriting:");
+            if(!newSal) return;
+            const res = await fetch('/api/admin/update_salary', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: userId, salary: newSal})
+            });
+            const result = await res.json();
+            if(result.success) {
+                alert("Yangilandi!");
+                location.reload();
+            } else {
+                alert("Xatolik!");
+            }
+        }
+    </script>
+</body>
+</html>
