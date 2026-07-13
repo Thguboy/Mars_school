@@ -4,407 +4,365 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MARS SPACE | Tizimga kirish</title>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            background: #0d1117;
-            font-family: 'Inter', sans-serif;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            position: relative;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        #constellation-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
+        html, body {
             width: 100%;
             height: 100%;
+            overflow: hidden;
+            background: #13172b;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Canvas fills the full viewport */
+        #constellation-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
             z-index: 0;
+            display: block;
         }
 
-        .main-brand {
+        /* Center everything over canvas */
+        .page-wrapper {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             z-index: 10;
-            margin-bottom: 20px;
-            text-align: center;
         }
 
-        .mars-logo-glow {
+        /* MARS Logo */
+        .mars-logo {
             font-family: 'Outfit', sans-serif;
-            font-size: 68px;
+            font-size: 62px;
             font-weight: 900;
             color: #fff;
-            letter-spacing: 6px;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
+            letter-spacing: 8px;
+            margin-bottom: 28px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
+            gap: 14px;
+            text-shadow: 0 0 40px rgba(255,255,255,0.15);
+        }
+        .mars-dot {
+            width: 36px; height: 36px;
+            background: #ff5722;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255,87,34,0.8);
+            animation: pulse 2s infinite alternate;
+            flex-shrink: 0;
+        }
+        @keyframes pulse {
+            from { box-shadow: 0 0 12px rgba(255,87,34,0.6); transform: scale(1); }
+            to   { box-shadow: 0 0 28px rgba(255,87,34,1);   transform: scale(1.08); }
         }
 
-        .mars-logo-icon {
-            color: #ff5722;
-            font-size: 40px;
-            text-shadow: 0 0 20px rgba(255, 87, 34, 0.8);
-            animation: pulse-glow 2s infinite alternate;
-        }
-
-        @keyframes pulse-glow {
-            from { text-shadow: 0 0 10px rgba(255, 87, 34, 0.6); transform: scale(1); }
-            to { text-shadow: 0 0 25px rgba(255, 87, 34, 1); transform: scale(1.05); }
-        }
-
-        /* Glassmorphism authentication box */
-        .auth-container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 500px;
-            background: rgba(20, 22, 30, 0.75);
+        /* Auth Card */
+        .auth-card {
+            width: 460px;
+            background: rgba(20, 23, 36, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 22px;
-            padding: 38px 42px;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 36px 40px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
         }
 
-        /* Top header of box */
-        .box-header {
+        .card-topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 28px;
         }
-
         .offer-link {
-            color: #b3b3b3;
+            color: #8a8a9a;
             font-size: 13px;
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 6px;
         }
-        
-        .lang-switch {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .lang-pill {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 20px;
-            padding: 5px 12px;
-            color: #fff;
+            padding: 5px 14px;
+            color: #ccc;
             font-size: 13px;
-            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 6px;
         }
-        .lang-switch i { color: #ff5722; }
+        .lang-pill i { color: #ff5722; }
 
-        .auth-container h2 {
+        h2 {
             text-align: center;
             color: #fff;
-            font-size: 26px;
-            margin: 0 0 6px 0;
+            font-size: 24px;
             font-family: 'Outfit', sans-serif;
             font-weight: 700;
+            margin-bottom: 6px;
         }
-
-        .auth-container p.sub-text {
+        .sub {
             text-align: center;
-            color: #888;
-            font-size: 14px;
-            margin: 0 0 28px 0;
+            color: #7a7a8e;
+            font-size: 13px;
+            margin-bottom: 28px;
         }
 
-        /* Toggle Tabs */
-        .tab-wrapper {
-            background: rgba(255, 255, 255, 0.05);
+        /* Tabs */
+        .tabs {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.07);
             border-radius: 12px;
             display: flex;
             padding: 5px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 26px;
         }
-
-        .tab-btn {
+        .tab {
             flex: 1;
-            padding: 10px;
+            padding: 11px;
             border: none;
             background: transparent;
-            color: #aaa;
+            color: #777;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
         }
-
-        .tab-btn.active {
+        .tab.active {
             background: #fff;
-            color: #0b0e14;
-            font-weight: 600;
+            color: #13172b;
+            font-weight: 700;
         }
 
         /* Forms */
-        .auth-form {
-            display: none;
-            animation: fadeIn 0.4s ease forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .auth-form.active-form {
-            display: block;
+        .form-section { display: none; }
+        .form-section.visible { display: block; animation: fadeUp 0.3s ease forwards; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        .input-group input {
+        .field { margin-bottom: 14px; }
+        .field input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 10px;
-            padding: 16px 18px;
+            padding: 15px 18px;
             color: #fff;
             font-size: 15px;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, background 0.2s;
         }
-        .input-group input::placeholder {
-            color: #888;
-        }
-        .input-group input:focus {
+        .field input::placeholder { color: #555; }
+        .field input:focus {
             outline: none;
-            border-color: #ff5722;
-            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255,87,34,0.6);
+            background: rgba(255,255,255,0.1);
         }
 
-        .btn-submit {
+        .submit-btn {
             width: 100%;
-            background: linear-gradient(135deg, #cd7760, #b85e47);
+            background: #cd7760;
             border: none;
             border-radius: 12px;
-            padding: 16px;
+            padding: 15px;
             color: #fff;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 12px;
-            letter-spacing: 0.5px;
+            font-family: 'Inter', sans-serif;
+            margin-top: 6px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
         }
-        .btn-submit:hover {
-            background: linear-gradient(135deg, #eb886e, #cd7760);
+        .submit-btn:hover {
+            background: #e0886d;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(205, 119, 96, 0.4);
+            box-shadow: 0 8px 25px rgba(205,119,96,0.45);
         }
 
-        .bottom-link {
+        .switch-link {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 18px;
             font-size: 13px;
-            color: #aaa;
+            color: #777;
         }
-        .bottom-link a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        .switch-link a { color: #ccc; font-weight: 600; cursor: pointer; text-decoration: none; }
+        .switch-link a:hover { color: #fff; }
 
-        /* Alerts */
-        .flash-messages {
-            margin-bottom: 15px;
-        }
-        .flash-message {
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            text-align: center;
-        }
-        .flash-error { background: rgba(255, 87, 34, 0.2); border: 1px solid #ff5722; color: #ffab91; }
-        .flash-success { background: rgba(76, 175, 80, 0.2); border: 1px solid #4CAF50; color: #a5d6a7; }
-
+        /* Flash messages */
+        .flash { padding: 11px 14px; border-radius: 9px; font-size: 13px; text-align: center; margin-bottom: 16px; }
+        .flash-error   { background: rgba(202,71,84,0.18); border: 1px solid rgba(202,71,84,0.5); color: #ffb3b8; }
+        .flash-success { background: rgba(76,175,80,0.18); border: 1px solid rgba(76,175,80,0.5); color: #a5d6a7; }
     </style>
 </head>
 <body>
-    
-    <!-- Background script animation container -->
-    <canvas id="constellation-canvas"></canvas>
 
-    <div class="main-brand">
-        <div class="mars-logo-glow">MARS <i class="fa-solid fa-compact-disc mars-logo-icon"></i></div>
-    </div>
+<!-- Full-screen constellation canvas -->
+<canvas id="constellation-canvas"></canvas>
 
-    <div class="auth-container">
-        <div class="box-header">
+<div class="page-wrapper">
+    <!-- Logo -->
+    <div class="mars-logo">MARS <div class="mars-dot"></div></div>
+
+    <!-- Auth Card -->
+    <div class="auth-card">
+        <div class="card-topbar">
             <a href="#" class="offer-link"><i class="fa-regular fa-file-lines"></i> Offerta</a>
-            <div class="lang-switch"><i class="fa-solid fa-globe"></i> O'zb</div>
+            <div class="lang-pill"><i class="fa-solid fa-globe"></i> O'zb</div>
         </div>
 
         <h2>Spacega xush kelibsiz</h2>
-        <p class="sub-text">Bugun nimani o'rganamiz?</p>
-        
+        <p class="sub">Bugun nimani o'rganamiz?</p>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
             {% endif %}
         {% endwith %}
 
-        <div class="tab-wrapper">
-            <button class="tab-btn active" id="tab-login" onclick="switchForm('login')">Log In</button>
-            <button class="tab-btn" id="tab-register" onclick="switchForm('register')">Sign In (Register)</button>
+        <div class="tabs">
+            <button class="tab active" id="tab-login" onclick="switchTab('login')">Log In</button>
+            <button class="tab" id="tab-reg" onclick="switchTab('register')">Sign In (Register)</button>
         </div>
 
-        <!-- Login Form -->
-        <form id="form-login" class="auth-form active-form" action="{{ url_for('main.login') }}" method="POST">
-            <div class="input-group">
-                <input type="email" name="email" placeholder="Email/Mars ID" required>
-            </div>
-            <div class="input-group">
-                <input type="password" name="password" placeholder="Parol" required>
-            </div>
-            <button type="submit" class="btn-submit">Kirish</button>
-            <div class="bottom-link">
-                Akkauntga ega emasmisiz? <a onclick="switchForm('register')">Ro'yhatdan o'tish</a>
-            </div>
-        </form>
+        <!-- Login -->
+        <div id="f-login" class="form-section visible">
+            <form action="{{ url_for('main.login') }}" method="POST">
+                <div class="field"><input type="email" name="email" placeholder="Email / Mars ID" required></div>
+                <div class="field"><input type="password" name="password" placeholder="Parol" required></div>
+                <button type="submit" class="submit-btn">Kirish</button>
+            </form>
+            <div class="switch-link">Akkauntga ega emasmisiz? <a onclick="switchTab('register')">Ro'yhatdan o'tish</a></div>
+        </div>
 
-        <!-- Register Form -->
-        <form id="form-register" class="auth-form" action="{{ url_for('main.register') }}" method="POST">
-            <div class="input-group">
-                <input type="text" name="username" placeholder="To'liq Ismingiz" required>
-            </div>
-            <div class="input-group">
-                <input type="email" name="email" placeholder="Email (yangi)" required>
-            </div>
-            <div class="input-group">
-                <input type="password" name="password" placeholder="Parol" required>
-            </div>
-            <button type="submit" class="btn-submit">Ro'yhatdan o'tish</button>
-            <div class="bottom-link">
-                Akkauntingiz bormi? <a onclick="switchForm('login')">Kirish</a>
-            </div>
-        </form>
-
+        <!-- Register -->
+        <div id="f-register" class="form-section">
+            <form action="{{ url_for('main.register') }}" method="POST">
+                <div class="field"><input type="text" name="username" placeholder="To'liq Ismingiz" required></div>
+                <div class="field"><input type="email" name="email" placeholder="Email" required></div>
+                <div class="field"><input type="password" name="password" placeholder="Parol" required></div>
+                <button type="submit" class="submit-btn">Ro'yhatdan o'tish</button>
+            </form>
+            <div class="switch-link">Akkauntingiz bormi? <a onclick="switchTab('login')">Kirish</a></div>
+        </div>
     </div>
+</div>
 
-    <script>
-        function switchForm(target) {
-            if(target === 'login') {
-                document.getElementById('form-login').classList.add('active-form');
-                document.getElementById('form-register').classList.remove('active-form');
-                document.getElementById('tab-login').classList.add('active');
-                document.getElementById('tab-register').classList.remove('active');
-            } else {
-                document.getElementById('form-register').classList.add('active-form');
-                document.getElementById('form-login').classList.remove('active-form');
-                document.getElementById('tab-register').classList.add('active');
-                document.getElementById('tab-login').classList.remove('active');
-            }
+<script>
+    /* ---------- Tab switching ---------- */
+    function switchTab(t) {
+        const isLogin = t === 'login';
+        document.getElementById('f-login').classList.toggle('visible', isLogin);
+        document.getElementById('f-register').classList.toggle('visible', !isLogin);
+        document.getElementById('tab-login').classList.toggle('active', isLogin);
+        document.getElementById('tab-reg').classList.toggle('active', !isLogin);
+    }
+
+    /* ---------- Full-screen constellation ---------- */
+    const canvas = document.getElementById('constellation-canvas');
+    const ctx    = canvas.getContext('2d');
+    let W, H, pts = [];
+    const mouse = { x: -999, y: -999 };
+
+    window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+
+    function spawn() {
+        pts = [];
+        const N = Math.round(W * H / 9000);          // density based on screen area
+        for (let i = 0; i < N; i++) {
+            pts.push({
+                x:  Math.random() * W,
+                y:  Math.random() * H,
+                r:  Math.random() * 1.6 + 0.5,
+                vx: (Math.random() - .5) * .4,
+                vy: (Math.random() - .5) * .4,
+                op: Math.random() * .55 + .3,
+                ph: Math.random() * Math.PI * 2
+            });
         }
+    }
 
-        // ===== Enhanced Constellation Background =====
-        const canvas = document.getElementById('constellation-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, particles;
-        let mouse = { x: -9999, y: -9999 };
+    function draw(ts) {
+        /* Semi-transparent overlay creates motion trail */
+        ctx.fillStyle = 'rgba(19, 23, 43, 0.18)';
+        ctx.fillRect(0, 0, W, H);
 
-        window.addEventListener('mousemove', e => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-        });
+        const t = ts * 0.001;
+        const LINK = 140;
 
-        function init() {
-            width  = canvas.width  = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            particles = [];
-            for (let i = 0; i < 160; i++) {
-                particles.push({
-                    x:     Math.random() * width,
-                    y:     Math.random() * height,
-                    r:     Math.random() * 1.8 + 0.6,
-                    vx:    (Math.random() - 0.5) * 0.35,
-                    vy:    (Math.random() - 0.5) * 0.35,
-                    base:  Math.random() * 0.55 + 0.35,
-                    phase: Math.random() * Math.PI * 2,
-                });
+        for (let i = 0; i < pts.length; i++) {
+            const p = pts[i];
+
+            /* Move */
+            p.x += p.vx; p.y += p.vy;
+            if (p.x < 0) { p.x = 0; p.vx *= -1; }
+            if (p.x > W) { p.x = W; p.vx *= -1; }
+            if (p.y < 0) { p.y = 0; p.vy *= -1; }
+            if (p.y > H) { p.y = H; p.vy *= -1; }
+
+            /* Mouse repulsion */
+            const mdx = p.x - mouse.x, mdy = p.y - mouse.y;
+            const md  = Math.sqrt(mdx*mdx + mdy*mdy);
+            if (md < 120 && md > 0) {
+                p.vx += mdx/md * .055;
+                p.vy += mdy/md * .055;
+                const sp = Math.hypot(p.vx, p.vy);
+                if (sp > 1.6) { p.vx = p.vx/sp*1.6; p.vy = p.vy/sp*1.6; }
             }
-        }
 
-        function draw() {
-            ctx.fillStyle = 'rgba(11, 14, 20, 0.25)';
-            ctx.fillRect(0, 0, width, height);
+            /* Draw star with twinkle */
+            const op = Math.max(.1, Math.min(1, p.op + .28 * Math.sin(t * 1.3 + p.ph)));
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(210, 225, 255, ${op})`;
+            ctx.fill();
 
-            const now = performance.now() / 1000;
-
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0)      { p.x = 0;      p.vx *= -1; }
-                if (p.x > width)  { p.x = width;   p.vx *= -1; }
-                if (p.y < 0)      { p.y = 0;       p.vy *= -1; }
-                if (p.y > height) { p.y = height;  p.vy *= -1; }
-
-                const twinkle = p.base + 0.3 * Math.sin(now * 1.4 + p.phase);
-                const opacity  = Math.max(0.1, Math.min(1, twinkle));
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(200, 215, 255, ${opacity})`;
-                ctx.fill();
-
-                for (let j = i + 1; j < particles.length; j++) {
-                    const p2 = particles[j];
-                    const dx = p.x - p2.x;
-                    const dy = p.y - p2.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < 150) {
-                        const alpha = (0.25 - dist / 600) * opacity;
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.strokeStyle = `rgba(120, 150, 255, ${Math.max(0, alpha)})`;
-                        ctx.lineWidth = 0.6;
-                        ctx.stroke();
-                    }
-                }
-
-                const mdx = p.x - mouse.x;
-                const mdy = p.y - mouse.y;
-                const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-                if (mdist < 130 && mdist > 0) {
-                    p.vx += mdx / mdist * 0.06;
-                    p.vy += mdy / mdist * 0.06;
-                    const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-                    if (speed > 1.5) { p.vx = p.vx / speed * 1.5; p.vy = p.vy / speed * 1.5; }
+            /* Draw links */
+            for (let j = i+1; j < pts.length; j++) {
+                const q = pts[j];
+                const dx = p.x - q.x, dy = p.y - q.y;
+                const d  = Math.sqrt(dx*dx + dy*dy);
+                if (d < LINK) {
+                    const a = (1 - d/LINK) * 0.35 * op;
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(q.x, q.y);
+                    ctx.strokeStyle = `rgba(140, 180, 255, ${a})`;
+                    ctx.lineWidth  = .65;
+                    ctx.stroke();
                 }
             }
-            requestAnimationFrame(draw);
         }
+        requestAnimationFrame(draw);
+    }
 
-        window.addEventListener('resize', init);
-        init();
-        ctx.fillStyle = '#0b0e14';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        draw();
-    </script>
+    window.addEventListener('resize', () => { resize(); spawn(); });
+    resize();
+    /* Paint the bg colour first so there's no flicker */
+    ctx.fillStyle = '#13172b';
+    ctx.fillRect(0, 0, W, H);
+    spawn();
+    requestAnimationFrame(draw);
+</script>
 </body>
 </html>
