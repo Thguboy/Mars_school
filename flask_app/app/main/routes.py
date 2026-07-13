@@ -93,6 +93,7 @@ def admin_dashboard():
 @bp.route('/teacher_dashboard')
 @role_required('teacher')
 def teacher_dashboard():
+    teacher = User.query.get(session['user_id'])
     students = User.query.filter_by(role='student').all()
     topics = Topic.query.all()
-    return render_template('teacher.html', students=students, topics=topics)
+    return render_template('teacher.html', teacher=teacher, students=students, topics=topics)

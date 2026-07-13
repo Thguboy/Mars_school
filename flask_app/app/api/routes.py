@@ -4,8 +4,6 @@ from app.api import bp
 from app.utils import init_session
 from app.models import User, Topic, Attendance
 from app import db
-from app.api import bp
-from app.utils import init_session
 
 @bp.route('/role', methods=['POST'])
 def switch_role():
@@ -52,6 +50,20 @@ def update_salary():
         return jsonify({"success": True})
     return jsonify({"success": False, "message": "O'qituvchi topilmadi!"}), 404
 
+@bp.route('/admin/add_coins_to_teacher', methods=['POST'])
+def add_coins_to_teacher():
+    """Admin gives coin budget to a Teacher. Teacher can only spend these coins on students."""
+    data = request.json or request.form
+    teacher_id = data.get('teacher_id')
+    coins = int(data.get('coins', 0))
+    
+    teacher = User.query.get(teacher_id)
+    if teacher and teacher.role == 'teacher':
+        teacher.coins += coins
+        db.session.commit()
+        return jsonify({"success": True, "new_balance": teacher.coins})
+    return jsonify({"success": False, "message": "O'qituvchi topilmadi!"}), 404
+
 @bp.route('/teacher/attendance', methods=['POST'])
 def mark_attendance():
     data = request.json or request.form
@@ -67,16 +79,26 @@ def mark_attendance():
 
 @bp.route('/teacher/assign_coins', methods=['POST'])
 def assign_coins():
+    """Teacher assigns coins from their budget to a student."""
     data = request.json or request.form
-    user_id = data.get('user_id')
+    student_id = data.get('user_id')
+    teacher_id = data.get('teacher_id')
     coins = int(data.get('coins', 0))
     
-    user = User.query.get(user_id)
-    if user:
-        user.coins += coins
-        db.session.commit()
-        return jsonify({"success": True})
-    return jsonify({"success": False, "message": "Foydalanuvchi topilmadi"}), 404
+    teacher = User.query.get(teacher_id)
+    student = User.query.get(student_id)
+    
+    if not teacher or teacher.role != 'teacher':
+        return jsonify({"success": False, "message": "O'qituvchi topilmadi"}), 404
+    if not student:
+        return jsonify({"success": False, "message": "O'quvchi topilmadi"}), 404
+    if teacher.coins < coins:
+        return jsonify({"success": False, "message": f"Yetarli coin yo'q! Sizda faqat {teacher.coins} coin bor."}), 400
+    
+    teacher.coins -= coins
+    student.coins += coins
+    db.session.commit()
+    return jsonify({"success": True, "teacher_remaining": teacher.coins, "student_coins": student.coins})
 
 @bp.route('/stats', methods=['GET'])
 def get_stats():

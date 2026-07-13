@@ -6,113 +6,344 @@
     <title>MARS SPACE | O'qituvchi Paneli</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
-        .admin-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); padding: 20px;}
-        .admin-section { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 20px; }
-        .admin-section h3 { margin-top: 0; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;}
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ccc;}
-        .data-table th { color: #00e5ff; font-weight: 600; }
-        .admin-btn { padding: 8px 15px; background: linear-gradient(135deg, #00e5ff, #0055ff); border: none; border-radius: 5px; color: white; cursor: pointer; }
-        .admin-btn:hover { opacity: 0.9; }
+        :root {
+            --bg: #0f1117;
+            --surface: rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.08);
+            --accent: #00e5ff;
+            --yellow: #e2b714;
+            --red: #ca4754;
+            --green: #4caf50;
+            --text: #d1d0c5;
+            --muted: #646669;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+        
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 230px;
+            background: rgba(255,255,255,0.03);
+            border-right: 1px solid var(--border);
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: fixed;
+            height: 100vh;
+        }
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            padding: 0 10px 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i { color: var(--accent); }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 15px; border-radius: 10px;
+            color: var(--muted); cursor: pointer;
+            font-size: 14px; font-weight: 500;
+            transition: all 0.2s; background: none; border: none;
+            width: 100%; text-align: left;
+        }
+        .nav-item.active, .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+        .nav-item.active { color: var(--accent); }
+        .sidebar-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); }
+
+        .main { margin-left: 230px; padding: 30px; }
+
+        /* Coin Budget Banner */
+        .budget-banner {
+            background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(0,229,255,0.03));
+            border: 1px solid rgba(0,229,255,0.2);
+            border-radius: 16px;
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        .budget-icon { font-size: 50px; color: var(--accent); }
+        .budget-info { flex: 1; }
+        .budget-info .budget-num { font-size: 42px; font-weight: 800; font-family: 'Outfit', sans-serif; color: var(--accent); }
+        .budget-info .budget-label { color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title i { color: var(--accent); }
+
+        /* Student Attendance Table */
+        .student-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .student-row:last-child { border-bottom: none; }
+        
+        .student-info { display: flex; flex-direction: column; gap: 3px; }
+        .student-name { font-weight: 600; font-size: 15px; }
+        .student-meta { color: var(--muted); font-size: 12px; }
+        
+        .coin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(226,183,20,0.1);
+            border: 1px solid rgba(226,183,20,0.2);
+            color: var(--yellow);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .attendance-btns { display: flex; gap: 8px; }
+        .att-btn {
+            width: 38px; height: 38px;
+            border: none; border-radius: 8px;
+            font-size: 18px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .att-btn-plus { background: rgba(76,175,80,0.2); color: var(--green); border: 1px solid rgba(76,175,80,0.3); }
+        .att-btn-plus:hover { background: rgba(76,175,80,0.4); }
+        .att-btn-minus { background: rgba(202,71,84,0.2); color: var(--red); border: 1px solid rgba(202,71,84,0.3); }
+        .att-btn-minus:hover { background: rgba(202,71,84,0.4); }
+
+        .coin-input-wrap {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .coin-input {
+            width: 70px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: var(--text);
+            font-size: 13px;
+            text-align: center;
+        }
+        .coin-input:focus { outline: none; border-color: var(--yellow); }
+        .coin-send-btn {
+            background: rgba(226,183,20,0.15);
+            border: 1px solid rgba(226,183,20,0.3);
+            color: var(--yellow);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .coin-send-btn:hover { background: rgba(226,183,20,0.3); }
+
+        /* Topics section */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .topic-chip {
+            background: rgba(0,229,255,0.06);
+            border: 1px solid rgba(0,229,255,0.15);
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .topic-chip i { color: var(--accent); margin-top: 2px; }
+        .topic-chip .topic-name { font-size: 14px; font-weight: 500; }
+        .topic-chip .topic-date { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+        .empty-state { text-align:center; color:var(--muted); padding:40px; }
+        .empty-state i { font-size:40px; margin-bottom:10px; display:block; }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #2c2e31; border: 1px solid var(--border);
+            color: var(--text); padding: 14px 20px;
+            border-radius: 10px; font-size: 14px;
+            display: none; z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .toast.show { display: flex; align-items: center; gap: 10px; }
+        .toast.success i { color: var(--green); }
+        .toast.error i { color: var(--red); }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <aside class="sidebar">
-            <div class="logo-area">
-                <div class="logo-graphic"><i class="fa-solid fa-cookie-bite logo-spin"></i></div>
-                <span class="logo-text">MARS <span class="accent-dot" style="color:#00e5ff;">.</span></span>
-            </div>
-            <nav class="nav-menu">
-                <button class="nav-item active">
-                    <i class="fa-solid fa-chalkboard-user"></i> <span>Asosiy Panel</span>
-                </button>
-            </nav>
-        </aside>
-
-        <div class="content-wrapper">
-            <header class="top-header">
-                <div class="header-left"><h2 class="section-title-label">O'qituvchi Paneli</h2></div>
-                <div class="header-right">
-                    <div class="profile-area">
-                        <div class="profile-name-block">
-                            <span class="profile-user-name">O'qituvchi</span>
-                        </div>
-                        <a href="{{ url_for('main.logout') }}" style="color: #ff6b6b; margin-left: 15px; text-decoration: none;"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
-                    </div>
-                </div>
-            </header>
-
-            <main class="page-container" style="display:block; padding: 20px;">
-                <div class="admin-grid">
-                    <div class="admin-section">
-                        <h3><i class="fa-solid fa-users-viewfinder"></i> O'quvchilar va Davomat</h3>
-                        <table class="data-table">
-                            <tr><th>Ism</th><th>Coinlar</th><th>Amallar</th></tr>
-                            {% for student in students %}
-                            <tr>
-                                <td>{{ student.username }}</td>
-                                <td>{{ student.coins }}</td>
-                                <td>
-                                    <button class="admin-btn" style="padding:4px 8px; font-size:12px;" onclick="markAttendance({{ student.id }}, 'present')">Davomat (+)</button>
-                                    <button class="admin-btn" style="padding:4px 8px; font-size:12px; background: #ff6b6b;" onclick="markAttendance({{ student.id }}, 'absent')">Davomat (-)</button>
-                                    <button class="admin-btn" style="padding:4px 8px; font-size:12px; background: #eab308;" onclick="giveCoins({{ student.id }})">Coin berish</button>
-                                </td>
-                            </tr>
-                            {% else %}
-                            <tr><td colspan="3">O'quvchilar mavjud emas</td></tr>
-                            {% endfor %}
-                        </table>
-                    </div>
-
-                    <div class="admin-section">
-                        <h3><i class="fa-solid fa-book-open"></i> Mavzular</h3>
-                        <ul>
-                            {% for topic in topics %}
-                                <li style="color: #ccc; margin-bottom: 10px;">{{ topic.name }} - {{ topic.created_at.strftime('%Y-%m-%d') }}</li>
-                            {% else %}
-                                <li style="color: #ccc;">Mavzular yo'q</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </main>
+<div class="layout">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo"><i class="fa-solid fa-chalkboard-user"></i> O'qituvchi</div>
+        <button class="nav-item active" onclick="showSection('attendance')"><i class="fa-solid fa-users-viewfinder"></i> Davomat & Coinlar</button>
+        <button class="nav-item" onclick="showSection('topics')"><i class="fa-solid fa-book-open"></i> Mavzular</button>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('main.logout') }}" class="nav-item" style="text-decoration:none; color: var(--muted);">
+                <i class="fa-solid fa-right-from-bracket"></i> Chiqish
+            </a>
         </div>
-    </div>
-    
-    <script>
-        async function markAttendance(userId, status) {
-            const res = await fetch('/api/teacher/attendance', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({user_id: userId, status: status})
-            });
-            const result = await res.json();
-            if(result.success) {
-                alert("Davomat qilindi!");
-            } else {
-                alert("Xatolik!");
-            }
-        }
+    </nav>
 
-        async function giveCoins(userId) {
-            const coins = prompt("Qancha coin bermoqchisiz?");
-            if(!coins) return;
-            const res = await fetch('/api/teacher/assign_coins', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({user_id: userId, coins: coins})
-            });
-            const result = await res.json();
-            if(result.success) {
-                alert("Coinlar qo'shildi!");
-                location.reload();
-            } else {
-                alert("Xatolik!");
-            }
-        }
-    </script>
+    <!-- Main -->
+    <main class="main">
+        <h1 style="font-family:'Outfit',sans-serif; margin-bottom:25px; font-size:26px;">
+            Xush kelibsiz, <span style="color:var(--accent);">{{ teacher.username }}</span>!
+        </h1>
+
+        <!-- Budget Banner -->
+        <div class="budget-banner">
+            <i class="fa-solid fa-coins budget-icon"></i>
+            <div class="budget-info">
+                <div class="budget-num" id="teacher-coins">{{ teacher.coins }}</div>
+                <div class="budget-label">Qolgan coin budjetingiz. Bu coinlarni o'quvchilarga taqsimlashingiz mumkin.</div>
+            </div>
+        </div>
+
+        <!-- SECTION: Attendance & Coins -->
+        <section id="section-attendance">
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-users-viewfinder"></i> O'quvchilar Davomati va Coin Taqsimoti</div>
+
+                {% if students %}
+                    {% for student in students %}
+                    <div class="student-row">
+                        <div class="student-info">
+                            <div class="student-name">{{ student.username }}</div>
+                            <div class="student-meta">{{ student.email or 'Email yo\'q' }}</div>
+                        </div>
+
+                        <div class="coin-badge" id="coin-display-{{ student.id }}">
+                            <i class="fa-solid fa-coins"></i> {{ student.coins }}
+                        </div>
+
+                        <div class="attendance-btns">
+                            <button class="att-btn att-btn-plus" onclick="markAttendance({{ student.id }}, 'present')" title="Keldi (+)">+</button>
+                            <button class="att-btn att-btn-minus" onclick="markAttendance({{ student.id }}, 'absent')" title="Kelmadi (-)">-</button>
+                        </div>
+
+                        <div class="coin-input-wrap">
+                            <input type="number" class="coin-input" id="coinval-{{ student.id }}" value="10" min="1">
+                            <button class="coin-send-btn" onclick="giveCoins({{ student.id }})"><i class="fa-solid fa-coins"></i> Coin</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state"><i class="fa-solid fa-user-slash"></i> O'quvchilar mavjud emas</div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- SECTION: Topics -->
+        <section id="section-topics" style="display:none;">
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-book-open"></i> Mavzular Ro'yxati</div>
+                {% if topics %}
+                    <div class="topics-grid">
+                        {% for topic in topics %}
+                        <div class="topic-chip">
+                            <i class="fa-solid fa-circle-dot"></i>
+                            <div>
+                                <div class="topic-name">{{ topic.name }}</div>
+                                <div class="topic-date">{{ topic.created_at.strftime('%d-%m-%Y') }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state"><i class="fa-solid fa-book-open"></i> Mavzular hali qo'shilmagan</div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toast-msg"></span></div>
+
+<script>
+const TEACHER_ID = {{ teacher.id }};
+
+function showSection(name) {
+    document.querySelectorAll('section[id^=section]').forEach(s => s.style.display = 'none');
+    document.getElementById('section-' + name).style.display = 'block';
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+
+function showToast(msg, type='success') {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    toast.className = 'toast show ' + type;
+    toast.querySelector('i').className = type === 'success'
+        ? 'fa-solid fa-circle-check'
+        : 'fa-solid fa-circle-exclamation';
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+async function markAttendance(userId, status) {
+    const res = await fetch('/api/teacher/attendance', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ user_id: userId, status: status })
+    });
+    const result = await res.json();
+    if (result.success) {
+        const label = status === 'present' ? "✅ Davomat qilindi (Keldi)" : "❌ Davomat qilindi (Kelmadi)";
+        showToast(label);
+    } else {
+        showToast("Xatolik!", 'error');
+    }
+}
+
+async function giveCoins(studentId) {
+    const coins = parseInt(document.getElementById('coinval-' + studentId).value);
+    if (!coins || coins <= 0) return showToast("Noto'g'ri miqdor!", 'error');
+
+    const res = await fetch('/api/teacher/assign_coins', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ user_id: studentId, teacher_id: TEACHER_ID, coins: coins })
+    });
+    const result = await res.json();
+    if (result.success) {
+        document.getElementById('coin-display-' + studentId).innerHTML =
+            `<i class="fa-solid fa-coins"></i> ${result.student_coins}`;
+        document.getElementById('teacher-coins').textContent = result.teacher_remaining;
+        showToast(`${coins} coin o'quvchiga berildi!`);
+    } else {
+        showToast(result.message || "Xatolik!", 'error');
+    }
+}
+</script>
 </body>
 </html>
