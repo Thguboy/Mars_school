@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARS SPACE | O'qituvchi Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f1117;
+            --surface: rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.08);
+            --accent: #00e5ff;
+            --yellow: #e2b714;
+            --red: #ca4754;
+            --green: #4caf50;
+            --text: #d1d0c5;
+            --muted: #646669;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+        
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 230px;
+            background: rgba(255,255,255,0.03);
+            border-right: 1px solid var(--border);
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: fixed;
+            height: 100vh;
+        }
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            padding: 0 10px 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i { color: var(--accent); }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 15px; border-radius: 10px;
+            color: var(--muted); cursor: pointer;
+            font-size: 14px; font-weight: 500;
+            transition: all 0.2s; background: none; border: none;
+            width: 100%; text-align: left;
+        }
+        .nav-item.active, .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+        .nav-item.active { color: var(--accent); }
+        .sidebar-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); }
+
+        .main { margin-left: 230px; padding: 30px; }
+
+        /* Coin Budget Banner */
+        .budget-banner {
+            background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(0,229,255,0.03));
+            border: 1px solid rgba(0,229,255,0.2);
+            border-radius: 16px;
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        .budget-icon { font-size: 50px; color: var(--accent); }
+        .budget-info { flex: 1; }
+        .budget-info .budget-num { font-size: 42px; font-weight: 800; font-family: 'Outfit', sans-serif; color: var(--accent); }
+        .budget-info .budget-label { color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title i { color: var(--accent); }
+
+        /* Student Attendance Table */
+        .student-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .student-row:last-child { border-bottom: none; }
+        
+        .student-info { display: flex; flex-direction: column; gap: 3px; }
+        .student-name { font-weight: 600; font-size: 15px; }
+        .student-meta { color: var(--muted); font-size: 12px; }
+        
+        .coin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(226,183,20,0.1);
+            border: 1px solid rgba(226,183,20,0.2);
+            color: var(--yellow);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .attendance-btns { display: flex; gap: 8px; }
+        .att-btn {
+            width: 38px; height: 38px;
+            border: none; border-radius: 8px;
+            font-size: 18px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .att-btn-plus { background: rgba(76,175,80,0.2); color: var(--green); border: 1px solid rgba(76,175,80,0.3); }
+        .att-btn-plus:hover { background: rgba(76,175,80,0.4); }
+        .att-btn-minus { background: rgba(202,71,84,0.2); color: var(--red); border: 1px solid rgba(202,71,84,0.3); }
+        .att-btn-minus:hover { background: rgba(202,71,84,0.4); }
+
+        .coin-input-wrap {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .coin-input {
+            width: 70px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: var(--text);
+            font-size: 13px;
+            text-align: center;
+        }
+        .coin-input:focus { outline: none; border-color: var(--yellow); }
+        .coin-send-btn {
+            background: rgba(226,183,20,0.15);
+            border: 1px solid rgba(226,183,20,0.3);
+            color: var(--yellow);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .coin-send-btn:hover { background: rgba(226,183,20,0.3); }
+
+        /* Topics section */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .topic-chip {
+            background: rgba(0,229,255,0.06);
+            border: 1px solid rgba(0,229,255,0.15);
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .topic-chip i { color: var(--accent); margin-top: 2px; }
+        .topic-chip .topic-name { font-size: 14px; font-weight: 500; }
+        .topic-chip .topic-date { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+        .empty-state { text-align:center; color:var(--muted); padding:40px; }
+        .empty-state i { font-size:40px; margin-bottom:10px; display:block; }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #2c2e31; border: 1px solid var(--border);
+            color: var(--text); padding: 14px 20px;
+            border-radius: 10px; font-size: 14px;
+            display: none; z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .toast.show { display: flex; align-items: center; gap: 10px; }
+        .toast.success i { color: var(--green); }
+        .toast.error i { color: var(--red); }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo"><i class="fa-solid fa-chalkboard-user"></i> O'qituvchi</div>
+        <button class="nav-item active" onclick="showSection('attendance')"><i class="fa-solid fa-users-viewfinder"></i> Davomat & Coinlar</button>
+        <button class="nav-item" onclick="showSection('topics')"><i class="fa-solid fa-book-open"></i> Mavzular</button>
+        <div class="sidebar-footer">
+            <a href="#" onclick="handleLogout()" class="nav-item" style="text-decoration:none; color: var(--muted);">
+                <i class="fa-solid fa-right-from-bracket"></i> Chiqish
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="main">
+        <h1 style="font-family:'Outfit',sans-serif; margin-bottom:25px; font-size:26px;">
+            Xush kelibsiz, <span style="color:var(--accent);" id="teacher-username">O'qituvchi</span>!
+        </h1>
+
+        <!-- Budget Banner -->
+        <div class="budget-banner">
+            <i class="fa-solid fa-coins budget-icon"></i>
+            <div class="budget-info">
+                <div class="budget-num" id="teacher-coins">0</div>
+                <div class="budget-label">Qolgan coin budjetingiz. Bu coinlarni o'quvchilarga taqsimlashingiz mumkin.</div>
+            </div>
+        </div>
+
+        <!-- SECTION: Attendance & Coins -->
+        <section id="section-attendance">
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-users-viewfinder"></i> O'quvchilar Davomati va Coin Taqsimoti</div>
+
+                <div id="students-container">
+                    <div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Yuklanmoqda...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Topics -->
+        <section id="section-topics" style="display:none;">
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-book-open"></i> Mavzular Ro'yxati</div>
+                <div id="topics-container">
+                    <div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Yuklanmoqda...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toast-msg"></span></div>
+
+<script>
+let TEACHER_ID = null;
+
+function handleLogout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('role');
+    window.location.href = 'login.html';
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    try {
+        const res = await fetch('http://127.0.0.1:8000/api/pages/teacher', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            TEACHER_ID = data.teacher.id;
+            document.getElementById('teacher-username').textContent = data.teacher.username;
+            document.getElementById('teacher-coins').textContent = data.teacher.coins;
+            
+            // Render students
+            const stContainer = document.getElementById('students-container');
+            if (data.students.length > 0) {
+                let html = '';
+                data.students.forEach(st => {
+                    html += `
+                    <div class="student-row">
+                        <div class="student-info">
+                            <div class="student-name">${st.username}</div>
+                            <div class="student-meta">${st.email || "Email yo'q"}</div>
+                        </div>
+                        <div class="coin-badge" id="coin-display-${st.id}">
+                            <i class="fa-solid fa-coins"></i> ${st.coins}
+                        </div>
+                        <div class="attendance-btns">
+                            <button class="att-btn att-btn-plus" onclick="markAttendance(${st.id}, 'present')" title="Keldi (+)">+</button>
+                            <button class="att-btn att-btn-minus" onclick="markAttendance(${st.id}, 'absent')" title="Kelmadi (-)">-</button>
+                        </div>
+                        <div class="coin-input-wrap">
+                            <input type="number" class="coin-input" id="coinval-${st.id}" value="10" min="1">
+                            <button class="coin-send-btn" onclick="giveCoins(${st.id})"><i class="fa-solid fa-coins"></i> Coin</button>
+                        </div>
+                    </div>`;
+                });
+                stContainer.innerHTML = html;
+            } else {
+                stContainer.innerHTML = `<div class="empty-state"><i class="fa-solid fa-user-slash"></i> O'quvchilar mavjud emas</div>`;
+            }
+            
+            // Render topics
+            const tContainer = document.getElementById('topics-container');
+            if (data.topics.length > 0) {
+                let html = '<div class="topics-grid">';
+                data.topics.forEach(tp => {
+                    html += `
+                    <div class="topic-chip">
+                        <i class="fa-solid fa-circle-dot"></i>
+                        <div>
+                            <div class="topic-name">${tp.name}</div>
+                            <div class="topic-date">ID: ${tp.id}</div>
+                        </div>
+                    </div>`;
+                });
+                html += '</div>';
+                tContainer.innerHTML = html;
+            } else {
+                tContainer.innerHTML = `<div class="empty-state"><i class="fa-solid fa-book-open"></i> Mavzular hali qo'shilmagan</div>`;
+            }
+            
+        } else {
+            if(res.status === 401 || res.status === 403) window.location.href = 'login.html';
+        }
+    } catch(e) {
+        console.error("Fetch error", e);
+    }
+});
+
+function showSection(name) {
+    document.querySelectorAll('section[id^=section]').forEach(s => s.style.display = 'none');
+    document.getElementById('section-' + name).style.display = 'block';
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+
+function showToast(msg, type='success') {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    toast.className = 'toast show ' + type;
+    toast.querySelector('i').className = type === 'success'
+        ? 'fa-solid fa-circle-check'
+        : 'fa-solid fa-circle-exclamation';
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+async function markAttendance(userId, status) {
+    const token = localStorage.getItem('access_token');
+    showToast("Davomat belgilanmoqda... (mock)");
+}
+
+async function giveCoins(studentId) {
+    const coins = parseInt(document.getElementById('coinval-' + studentId).value);
+    if (!coins || coins <= 0) return showToast("Noto'g'ri miqdor!", 'error');
+    
+    const token = localStorage.getItem('access_token');
+    const res = await fetch('http://127.0.0.1:8000/api/teacher/assign_coins', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ user_id: studentId, coins: coins })
+    });
+    const result = await res.json();
+    if (res.ok && result.success) {
+        document.getElementById('coin-display-' + studentId).innerHTML =
+            `<i class="fa-solid fa-coins"></i> ${result.student_coins}`;
+        document.getElementById('teacher-coins').textContent = result.teacher_remaining;
+        showToast(`${coins} coin o'quvchiga berildi!`);
+    } else {
+        showToast(result.detail || result.message || "Xatolik!", 'error');
+    }
+}
+</script>
+</body>
+</html>
